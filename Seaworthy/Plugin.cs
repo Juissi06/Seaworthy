@@ -22,6 +22,7 @@ namespace Seaworthy
         // Sail trim
         internal static ConfigEntry<bool> ManualTrim;
         internal static ConfigEntry<KeyCode> TrimModifier;
+        internal static ConfigEntry<bool> GamepadTrim;
         internal static ConfigEntry<float> TrimSpeed;
         internal static ConfigEntry<float> PerfectTrimBonus;
         internal static ConfigEntry<float> TrimTolerance;
@@ -73,6 +74,8 @@ namespace Seaworthy
                 "Set the sail angle yourself instead of the game doing it. A well trimmed sail is faster than vanilla, a badly trimmed one is slower.");
             TrimModifier = Config.Bind(trim, "Trim modifier", KeyCode.LeftShift,
                 "Hold this at the helm to turn the sail with the steering keys (A/D) instead of the rudder.");
+            GamepadTrim = Config.Bind(trim, "Gamepad trim", true,
+                "On a gamepad, hold the left trigger at the helm and use the stick to trim the sail.");
             TrimSpeed = Config.Bind(trim, "Trim speed", 45f,
                 new ConfigDescription("How fast the sail turns, in degrees per second.", new AcceptableValueRange<float>(10f, 180f)));
             PerfectTrimBonus = Config.Bind(trim, "Perfect trim bonus", 0.15f,

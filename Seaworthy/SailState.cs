@@ -145,8 +145,7 @@ namespace Seaworthy
                 SailState.LocalTrim = current ?? SailState.OptimalTrim(__instance);
             }
 
-            var modifier = Plugin.TrimModifier.Value;
-            if (modifier == KeyCode.None || !BepInEx.UnityInput.Current.GetKey(modifier)) return;
+            if (!TrimInput.Held()) return;
 
             // First touch starts from where the game had the sail, so taking over never jolts it.
             if (!SailState.LocalManual)
@@ -166,6 +165,21 @@ namespace Seaworthy
                 SailState.SendTrim(__instance, SailState.LocalTrim);
             }
         }
+    }
+
+    internal static class TrimInput
+    {
+        internal static bool Gamepad => Plugin.GamepadTrim.Value && ZInput.IsGamepadActive();
+
+        // The trim modifier on the keyboard, or the left trigger on a gamepad.
+        internal static bool Held()
+        {
+            var modifier = Plugin.TrimModifier.Value;
+            if (modifier != KeyCode.None && BepInEx.UnityInput.Current.GetKey(modifier)) return true;
+            return Gamepad && ZInput.GetButton("JoyLTrigger");
+        }
+
+        internal static string Hint => Gamepad ? "hold LT + stick" : $"{Plugin.TrimModifier.Value} + A/D";
     }
 
     // Owner: vanilla's sail force, scaled by how well the sail is trimmed and the helmsman's Sailing skill.

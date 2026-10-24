@@ -21,7 +21,7 @@ Main features
 - Every feature can be turned off, and the whole mod can be switched off in game
 
 Keys (all changeable)
-- Left Shift + A/D at the helm: trim the sail
+- Left Shift + A/D at the helm: trim the sail (gamepad: hold LT + stick)
 - G at the helm: drop / raise anchor
 - B (hold) at the helm of a beached ship: push off
 - Left Alt + click on the large map: set / clear course

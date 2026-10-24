@@ -29,10 +29,10 @@ Rules for every feature:
 5. [x] **Gusts and storm winds**: the wind wanders and surges, more in storms, shifting the best trim angle. Only affects a sail you trim yourself.
 6. [x] **Course to a pin**: Left Alt + click a pin or spot on the large map; the helm panel shows it on the compass with distance, which way to steer and an ETA.
 
+8. [x] **Gamepad trim**: hold LT and use the stick at the helm.
 7. [x] **Pointing higher**: a skilled helmsman trimming by hand can sail closer to the wind (no-go zone 41° → 34° at skill 100). The helm panel warns "Head to wind" when the sail can't draw.
 
 ## Later
-- Gamepad trim controls
 - Hull leaks you patch at sea, cargo weight that slows the ship
 - Ship upgrades from biome materials
 

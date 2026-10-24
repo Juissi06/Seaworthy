@@ -87,7 +87,7 @@ namespace Seaworthy
         {
             _tipShown = true;
             var tips = new System.Collections.Generic.List<string>();
-            if (ServerSettings.ManualTrim) tips.Add($"{Plugin.TrimModifier.Value} + A/D trims the sail");
+            if (ServerSettings.ManualTrim) tips.Add($"{TrimInput.Hint} trims the sail");
             if (ServerSettings.AnchorEnabled) tips.Add($"{Plugin.AnchorKey.Value} drops the anchor");
             if (Plugin.CourseModifier.Value != KeyCode.None) tips.Add($"{Plugin.CourseModifier.Value} + click on the map sets a course");
             if (tips.Count > 0)
@@ -149,7 +149,7 @@ namespace Seaworthy
                 {
                     Ui.Label(new Rect(x + pad, cy, inner, 22f), $"Sail trim  <color={Ui.Muted}>auto</color>", Ui.Text);
                 }
-                GUI.Label(new Rect(x + pad, cy, inner, 22f), $"{Plugin.TrimModifier.Value} + A/D to trim", _right);
+                GUI.Label(new Rect(x + pad, cy, inner, 22f), $"{TrimInput.Hint} to trim", _right);
                 cy += 26f;
                 DrawTrimBar(new Rect(x + pad, cy, inner, 14f));
                 cy += trimH - 32f;
