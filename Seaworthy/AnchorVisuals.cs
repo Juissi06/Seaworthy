@@ -13,6 +13,7 @@ namespace Seaworthy
         static readonly Color RopeColor = new Color(0.30f, 0.22f, 0.14f, 1f);
         static readonly Dictionary<Ship, LineRenderer> Ropes = new Dictionary<Ship, LineRenderer>();
         static readonly HashSet<Ship> Anchored = new HashSet<Ship>();
+        static readonly HashSet<Ship> Seen = new HashSet<Ship>();
         static Material _material;
 
         internal static void Update(Ship ship)
@@ -21,12 +22,13 @@ namespace Seaworthy
 
             bool anchored = ServerSettings.AnchorEnabled && SailState.IsAnchored(ship);
             bool was = Anchored.Contains(ship);
+            bool firstLook = Seen.Add(ship); // a ship that loads in already anchored doesn't splash
             if (anchored != was)
             {
                 if (anchored)
                 {
                     Anchored.Add(ship);
-                    ship.m_waterImpactEffect.Create(Bow(ship), Quaternion.identity);
+                    if (!firstLook) ship.m_waterImpactEffect.Create(Bow(ship), Quaternion.identity);
                 }
                 else
                 {
@@ -91,12 +93,14 @@ namespace Seaworthy
             foreach (var rope in Ropes.Values)
                 if (rope != null) rope.gameObject.SetActive(false);
             Anchored.Clear();
+            Seen.Clear();
         }
 
         internal static void Forget(Ship ship)
         {
             Ropes.Remove(ship);
             Anchored.Remove(ship);
+            Seen.Remove(ship);
         }
     }
 
