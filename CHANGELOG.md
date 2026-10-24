@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Crew rowing: each extra player aboard makes rowing 10% faster (up to 3 extra).
 - Cargo weight (optional, off by default): a heavily loaded hold makes the ship slower; the helm panel shows how full the hold is.
 - The helm panel shows hull health when the ship is damaged (skipped if Norse Sense is installed, which has its own).
 - Compatibility: with another mod that names ships (Shipwright's Touch), reveals the map at sea, adds a sailing skill or anchors (BoatAdditions), Seaworthy turns its own version off so they don't fight. Mods that change the sail force or wind are reported in the log.

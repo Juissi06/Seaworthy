@@ -36,6 +36,7 @@ Rules for every feature:
 10. [x] **Ship lanterns**: warm stern light after dark.
 11. [x] **Ship names**: Left Shift + E at the helm; shown on hover and the helm panel.
 12. [x] **Compatibility**: step aside for other ship-name, map-reveal, skill and anchor mods.
+15. [x] **Crew rowing**: +10% rowing per extra player aboard (up to 3).
 14. [x] **Cargo weight** (opt-in): a full hold slows the ship; hold load in the helm panel.
 13. [x] **Hull in the helm panel** when damaged (unless Norse Sense shows it).
 

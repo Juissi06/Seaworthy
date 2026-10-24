@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Seaworthy
 {
-    // At the helm: the anchor key, and the helm panel: a compass strip with heading and wind, speed, sail mode,
-    // wind strength, the trim gauge and the anchor state.
+    // At the helm: the anchor and push-off keys, the Sailing skill, and the helm panel: ship name, a compass strip
+    // with heading, wind and course, speed, sail mode, wind strength, course, trim gauge, anchor, hull, hold, beached.
     internal class Helm : MonoBehaviour
     {
         const float CompassRange = 75f; // degrees either side of the heading shown on the strip

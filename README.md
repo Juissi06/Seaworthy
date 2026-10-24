@@ -14,6 +14,7 @@ Main features
 - Gusts: the wind wanders and surges, more in storms, so trimming keeps you busy on long trips (only when you trim yourself)
 - Sailing skill: a new skill that levels while you steer, up to 20% faster sailing and rowing at level 100, and skilled sailors trimming by hand can sail closer to the wind
 - Anchor: press G at the helm. The ship stops and stays put, even when you leave it. Rope and splash included
+- Crew rowing: bring friends, every extra player aboard rows 10% faster
 - Push off: stuck on a beach? Hold B at the helm and the crew shoves you back towards deep water
 - Lookout: see more of the map from a ship, longships see twice as far
 - Ship lanterns: a warm glow at the stern after dark

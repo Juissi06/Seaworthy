@@ -58,6 +58,7 @@ namespace Seaworthy
         // Sailing skill
         internal static ConfigEntry<bool> SkillEnabled;
         internal static ConfigEntry<float> SkillBonus;
+        internal static ConfigEntry<float> CrewRowing;
 
         // Cargo
         internal static ConfigEntry<bool> CargoWeight;
@@ -148,6 +149,10 @@ namespace Seaworthy
             CargoPenalty = Config.Bind("Cargo", "Speed loss when full", 0.25f,
                 new ConfigDescription("Speed lost with a full hold (50 kg per storage slot), scaling up from an empty one.",
                     new AcceptableValueRange<float>(0f, 0.6f)));
+
+            CrewRowing = Config.Bind("Sailing Skill", "Crew rowing bonus", 0.1f,
+                new ConfigDescription("Rowing speed added for each extra player aboard (up to 3). 0 = vanilla.",
+                    new AcceptableValueRange<float>(0f, 0.25f)));
 
             EnforceOnClients = Config.Bind("Server", "Enforce on clients", true,
                 "Server/host only: players on your server use your sail trim and anchor settings instead of their own, " +

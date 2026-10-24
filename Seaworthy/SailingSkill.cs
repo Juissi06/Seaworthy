@@ -155,15 +155,21 @@ namespace Seaworthy
         }
     }
 
-    // Owner: rowing is faster with skill (and slower with a heavy hold, if that option is on). Scale the rowing force for this physics step only.
+    // Owner: rowing is faster with skill and with more crew aboard (and slower with a heavy hold, if that option
+    // is on). Scales the rowing force for this physics step only.
     [HarmonyPatch(typeof(Ship), nameof(Ship.CustomFixedUpdate))]
     static class RowingSkillPatch
     {
+        const int MaxExtraCrew = 3;
+        static readonly AccessTools.FieldRef<Ship, List<Player>> Players = AccessTools.FieldRefAccess<Ship, List<Player>>("m_players");
+
         static void Prefix(Ship __instance, out float __state)
         {
             __state = __instance.m_backwardForce;
-            if (__instance.IsOwner())
-                __instance.m_backwardForce = __state * SailingSkill.ForceFactor(__instance) * Cargo.SpeedFactor(__instance);
+            if (!__instance.IsOwner()) return;
+            int extraCrew = Mathf.Clamp(Players(__instance).Count - 1, 0, MaxExtraCrew);
+            float crew = 1f + ServerSettings.CrewRowing * extraCrew;
+            __instance.m_backwardForce = __state * SailingSkill.ForceFactor(__instance) * crew * Cargo.SpeedFactor(__instance);
         }
 
         static void Finalizer(Ship __instance, float __state) => __instance.m_backwardForce = __state;
