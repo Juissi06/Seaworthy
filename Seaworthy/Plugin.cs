@@ -32,6 +32,7 @@ namespace Seaworthy
         internal static ConfigEntry<float> PanelY;
         internal static ConfigEntry<SpeedUnit> SpeedUnits;
         internal static ConfigEntry<bool> ShowTips;
+        internal static ConfigEntry<bool> ShipLanterns;
 
         // Anchor
         internal static ConfigEntry<bool> AnchorEnabled;
@@ -92,6 +93,8 @@ namespace Seaworthy
                 new ConfigDescription("Vertical position of the helm panel. 0 = top edge, 1 = bottom edge.",
                     new AcceptableValueRange<float>(0f, 1f)));
             SpeedUnits = Config.Bind(panel, "Speed unit", SpeedUnit.Knots, "Unit for the ship's speed.");
+            ShipLanterns = Config.Bind("General", "Ship lanterns", true,
+                "After dark, ships carry a warm lantern glow at the stern. Visual only, on your screen.");
             ShowTips = Config.Bind(panel, "Show tips", true, "The first time you take a helm each session, list Seaworthy's controls.");
 
             const string anchor = "Anchor";
@@ -154,6 +157,7 @@ namespace Seaworthy
             {
                 _harmony.UnpatchSelf();
                 AnchorVisuals.HideAll();
+                ShipLights.HideAll();
             }
             _patched = on;
             _root.SetActive(on);

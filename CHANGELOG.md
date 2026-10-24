@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Ship lanterns: after dark, ships glow with a warm lantern at the stern, so you can find yours at night.
 - Gamepad: hold LT at the helm and use the stick to trim the sail.
 - Pointing higher: with your own trim, Sailing skill lets you sail closer to the wind (from about 41° to 34° off the wind at skill 100). The helm panel says "Head to wind" when you're too close for the sail to draw.
 - The first time you take a helm each session, a tip lists the controls (can be turned off).

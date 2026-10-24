@@ -114,6 +114,10 @@ namespace Seaworthy
     [HarmonyPatch(typeof(Ship), "OnDisable")]
     static class ShipDisablePatch
     {
-        static void Postfix(Ship __instance) => AnchorVisuals.Forget(__instance);
+        static void Postfix(Ship __instance)
+        {
+            AnchorVisuals.Forget(__instance);
+            ShipLights.Forget(__instance);
+        }
     }
 }

@@ -16,6 +16,7 @@ Main features
 - Anchor: press G at the helm. The ship stops and stays put, even when you leave it. Rope and splash included
 - Push off: stuck on a beach? Hold B at the helm and the crew shoves you back towards deep water
 - Lookout: see more of the map from a ship, longships see twice as far
+- Ship lanterns: a warm glow at the stern after dark
 - Course: Left Alt + click a pin on the map and the helm panel shows the way, the distance and when you'll get there
 - The server decides the rules, so nobody sails faster with their own config
 - Every feature can be turned off, and the whole mod can be switched off in game
