@@ -17,33 +17,37 @@ Rules for every feature:
 - One look: Valheim's own UI art and fonts, the same style as Norse Sense.
 
 ## Done
-- [x] Manual sail trim (Left Shift + A/D at the helm) with a perfect-trim bonus
-- [x] Anchor (G at the helm), rope and splash for everyone
+Sailing
+- [x] Manual sail trim (Left Shift + A/D, gamepad LT + stick) with a perfect-trim bonus
+- [x] Gusts and storm winds that shift the best trim angle (manual trim only)
+- [x] Pointing higher into the wind with Sailing skill; "Head to wind" warning
+- [x] Sailing skill: levels at the helm, more sail force and rowing speed
+- [x] Crew rowing: +10% rowing per extra player aboard (up to 3)
+
+At the helm
+- [x] Helm panel: ship name, compass with heading, wind and course, speed, sail mode, wind, trim, anchor, hull, hold, beached
+- [x] Course to a pin or spot (Left Alt + click on the map), with ETA and a temporary pin
+- [x] First-helm tip listing the controls
+
+Ship
+- [x] Anchor (G), rope and splash for everyone
+- [x] Push off a beached ship (hold B)
+- [x] Ship names (Left Shift + E at the helm)
+- [x] Ship lanterns after dark
+- [x] Lookout: bigger map reveal at sea, scaled by ship size
+
+Options (vanilla by default)
+- [x] Wave damage multiplier
+- [x] Cargo weight slows ships (off by default)
+
+Under the hood
 - [x] Server-enforced settings, dedicated servers supported
-
-## Now
-1. [x] **Helm panel**: speed (knots), compass strip with heading and wind, sail mode, trim gauge, anchor state.
-2. [x] **Lookout**: larger map reveal radius while aboard, scaled by ship (raft < karve < longship).
-3. [x] **Sailing skill**: a real skill in the skills list. Levels with distance sailed; raises sail force and rowing speed a little (default +20% at 100).
-4. [x] **Push off**: at the helm of a beached ship, hold a key to shove it back into deeper water.
-5. [x] **Gusts and storm winds**: the wind wanders and surges, more in storms, shifting the best trim angle. Only affects a sail you trim yourself.
-6. [x] **Course to a pin**: Left Alt + click a pin or spot on the large map; the helm panel shows it on the compass with distance, which way to steer and an ETA.
-
-8. [x] **Gamepad trim**: hold LT and use the stick at the helm.
-7. [x] **Pointing higher**: a skilled helmsman trimming by hand can sail closer to the wind (no-go zone 41° → 34° at skill 100). The helm panel warns "Head to wind" when the sail can't draw.
-
-9. [x] **Course on the map**: a course to a spot gets a temporary pin.
-10. [x] **Ship lanterns**: warm stern light after dark.
-11. [x] **Ship names**: Left Shift + E at the helm; shown on hover and the helm panel.
-12. [x] **Compatibility**: step aside for other ship-name, map-reveal, skill and anchor mods.
-16. [x] **Wave damage setting** (1 = vanilla).
-15. [x] **Crew rowing**: +10% rowing per extra player aboard (up to 3).
-14. [x] **Cargo weight** (opt-in): a full hold slows the ship; hold load in the helm panel.
-13. [x] **Hull in the helm panel** when damaged (unless Norse Sense shows it).
+- [x] Compatibility: steps aside for other ship-name, map-reveal, skill and anchor mods
+- [x] Whole mod can be switched off in game; the Sailing skill is kept in saves either way
 
 ## Next
-- In-game test pass, then tune: trim speed, bonus, anchor hold, gust size, skill gain rate
-- Screenshots and a Nexus page in the house style
+- In-game test pass, then tune: trim speed, bonus, anchor hold, gust size, skill gain rate, push-off strength
+- Screenshots and the Nexus page
 
 ## Later
 - Hull leaks you patch at sea
