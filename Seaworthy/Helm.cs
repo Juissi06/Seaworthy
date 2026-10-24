@@ -2,17 +2,22 @@ using UnityEngine;
 
 namespace Seaworthy
 {
-    // At the helm: the anchor key, and a gauge showing the sail angle against the best angle for the wind.
+    // At the helm: the anchor key, and the helm panel: a compass strip with heading and wind, speed, sail mode,
+    // wind strength, the trim gauge and the anchor state.
     internal class Helm : MonoBehaviour
     {
+        const float CompassRange = 75f; // degrees either side of the heading shown on the strip
+        static readonly string[] Points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
         static readonly Color TrackGood = new Color(0.55f, 0.85f, 0.45f, 0.45f);
         static readonly Color NeedleColor = new Color(1f, 0.97f, 0.9f, 1f);
+        static readonly Color WindColor = new Color(0.56f, 0.79f, 1f, 1f);
+        static readonly Color Cream = new Color(0.96f, 0.93f, 0.86f);
 
         Ship _ship;
-        float _optimal, _efficiency;
+        float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
         bool _anchored;
-        GUIStyle _right;
+        GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight;
 
         void Update()
         {
@@ -35,58 +40,164 @@ namespace Seaworthy
                     : $"<color={Ui.Gold}>Anchor raised</color>");
             }
 
-            _anchored = SailState.IsAnchored(_ship);
+            _anchored = ServerSettings.AnchorEnabled && SailState.IsAnchored(_ship);
             _trim = ServerSettings.ManualTrim ? SailState.GetTrim(_ship) : null;
             _optimal = SailState.OptimalTrim(_ship);
             _efficiency = _trim.HasValue ? SailState.ForceFactor(_trim.Value, _optimal) : 1f;
+
+            _speed = Mathf.Abs(_ship.GetSpeed());
+            _heading = Compass(_ship.transform.forward);
+            _windFrom = Compass(-EnvMan.instance.GetWindDir()); // GetWindDir is where the wind blows to
+            _wind = EnvMan.instance.GetWindIntensity();
         }
+
+        // 0 = north (+z), clockwise.
+        static float Compass(Vector3 dir) => Mathf.Repeat(Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg, 360f);
 
         void OnGUI()
         {
-            if (_ship == null || !Plugin.ShowTrimGauge.Value) return;
+            if (_ship == null || !Plugin.ShowHelmPanel.Value) return;
             if (Hud.IsUserHidden() || Menu.IsVisible() || InventoryGui.IsVisible() || Minimap.IsOpen()) return;
-            bool sailUp = _ship.IsSailUp();
-            bool showTrim = ServerSettings.ManualTrim && sailUp;
-            if (!showTrim && !_anchored) return;
+            InitStyles();
 
-            if (_right == null) _right = new GUIStyle(Ui.Small) { alignment = TextAnchor.MiddleRight };
+            bool showTrim = ServerSettings.ManualTrim && _ship.IsSailUp();
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
-            const float w = 380f, pad = 14f;
-            float h = (showTrim ? 52f : 0f) + (_anchored ? 26f : 0f) + 14f;
+            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f;
+            float h = pad + compassH + 6f + statsH + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
-            float y = Plugin.GaugeY.Value * (sh - h);
+            float y = Plugin.PanelY.Value * (sh - h);
             float inner = w - pad * 2f;
             Ui.Panel(new Rect(x, y, w, h));
-            float cy = y + 7f;
+            float cy = y + pad - 4f;
+
+            DrawCompass(new Rect(x + pad, cy, inner, compassH));
+            cy += compassH + 6f;
+
+            DrawStats(new Rect(x + pad, cy, inner, statsH));
+            cy += statsH;
 
             if (showTrim)
             {
-                string modifier = Plugin.TrimModifier.Value.ToString();
+                Ui.Divider(x + pad, cy, inner);
+                cy += 6f;
                 if (_trim.HasValue)
                 {
                     int percent = Mathf.RoundToInt(_efficiency * 100f);
                     string color = _efficiency >= 1f ? Ui.Good : _efficiency >= 0.75f ? Ui.Gold : _efficiency >= 0.4f ? Ui.Warn : Ui.Bad;
-                    Ui.Label(new Rect(x + pad, cy, inner, 24f), $"Sail trim  <color={color}><b>{percent}%</b></color>", Ui.Text);
+                    Ui.Label(new Rect(x + pad, cy, inner, 22f), $"Sail trim  <color={color}><b>{percent}%</b></color>", Ui.Text);
                 }
                 else
                 {
-                    Ui.Label(new Rect(x + pad, cy, inner, 24f), $"Sail trim  <color={Ui.Muted}>auto</color>", Ui.Text);
+                    Ui.Label(new Rect(x + pad, cy, inner, 22f), $"Sail trim  <color={Ui.Muted}>auto</color>", Ui.Text);
                 }
-                GUI.Label(new Rect(x + pad, cy, inner, 24f), $"{modifier} + A/D to trim", _right);
-                cy += 28f;
+                GUI.Label(new Rect(x + pad, cy, inner, 22f), $"{Plugin.TrimModifier.Value} + A/D to trim", _right);
+                cy += 26f;
                 DrawTrimBar(new Rect(x + pad, cy, inner, 14f));
-                cy += 24f;
+                cy += trimH - 32f;
             }
 
             if (_anchored)
             {
-                if (showTrim) Ui.Divider(x + pad, cy, inner);
-                Ui.Label(new Rect(x + pad, cy + 1f, inner, 24f),
+                Ui.Divider(x + pad, cy, inner);
+                Ui.Label(new Rect(x + pad, cy + 2f, inner, 24f),
                     $"<color={Ui.Warn}>Anchored</color>  <size=12><color={Ui.Muted}>({Plugin.AnchorKey.Value} to raise)</color></size>", Ui.Text);
             }
 
             GUI.matrix = oldMatrix;
+        }
+
+        void InitStyles()
+        {
+            if (_right != null) return;
+            _right = new GUIStyle(Ui.Small) { alignment = TextAnchor.MiddleRight };
+            _point = new GUIStyle(Ui.Small) { alignment = TextAnchor.MiddleCenter };
+            _tiny = new GUIStyle(Ui.Small) { fontSize = 11, alignment = TextAnchor.MiddleCenter };
+            _big = new GUIStyle(Ui.Text) { fontSize = 20 };
+            _textCenter = new GUIStyle(Ui.Text) { alignment = TextAnchor.MiddleCenter };
+            _textRight = new GUIStyle(Ui.Text) { alignment = TextAnchor.MiddleRight };
+        }
+
+        // A strip of the horizon centred on the heading: ticks every 15°, compass points, and where the wind comes from.
+        void DrawCompass(Rect r)
+        {
+            float cx = r.x + r.width * 0.5f, half = r.width * 0.5f;
+            float Pos(float bearing) => cx + Mathf.DeltaAngle(_heading, bearing) / CompassRange * half;
+            bool repaint = Event.current.type == EventType.Repaint;
+
+            Color old = GUI.color;
+            if (repaint)
+            {
+                GUI.color = new Color(0f, 0f, 0f, 0.3f);
+                GUI.DrawTexture(new Rect(r.x, r.y + 4f, r.width, r.height - 8f), Texture2D.whiteTexture);
+            }
+
+            for (int b = 0; b < 360; b += 15)
+            {
+                float d = Mathf.DeltaAngle(_heading, b);
+                if (Mathf.Abs(d) > CompassRange) continue;
+                float px = Pos(b);
+                float fade = 1f - Mathf.Abs(d) / CompassRange * 0.7f; // fainter towards the ends
+                if (b % 45 == 0)
+                {
+                    Color c = b == 0 ? Ui.GoldColor : Cream;
+                    c.a = fade;
+                    _point.normal.textColor = c;
+                    GUI.Label(new Rect(px - 20f, r.y + 2f, 40f, r.height - 4f), Points[b / 45], _point);
+                }
+                else if (repaint)
+                {
+                    GUI.color = new Color(1f, 1f, 1f, 0.35f * fade);
+                    GUI.DrawTexture(new Rect(px - 0.5f, r.y + 10f, 1f, r.height - 20f), Texture2D.whiteTexture);
+                }
+            }
+
+            // Wind: a blue marker where it comes from, pinned to the edge with a hint when it's behind you.
+            float wd = Mathf.DeltaAngle(_heading, _windFrom);
+            if (repaint)
+            {
+                float wx = Mathf.Clamp(Pos(_windFrom), r.x + 6f, r.xMax - 6f);
+                GUI.color = new Color(WindColor.r, WindColor.g, WindColor.b, 0.9f);
+                GUI.DrawTexture(new Rect(wx - 2f, r.y + 3f, 4f, r.height - 6f), Texture2D.whiteTexture);
+
+                // Heading marker top and bottom.
+                GUI.color = Ui.GoldColor;
+                GUI.DrawTexture(new Rect(cx - 1f, r.y, 2f, 7f), Texture2D.whiteTexture);
+                GUI.DrawTexture(new Rect(cx - 1f, r.yMax - 7f, 2f, 7f), Texture2D.whiteTexture);
+                GUI.color = old;
+            }
+            if (Mathf.Abs(wd) > CompassRange)
+            {
+                _tiny.normal.textColor = WindColor;
+                GUI.Label(new Rect(wd < 0 ? r.x + 10f : r.xMax - 56f, r.y, 46f, r.height), wd < 0 ? "« wind" : "wind »", _tiny);
+            }
+            GUI.color = old;
+        }
+
+        void DrawStats(Rect r)
+        {
+            string speed;
+            switch (Plugin.SpeedUnits.Value)
+            {
+                case SpeedUnit.KilometresPerHour: speed = $"<b>{_speed * 3.6f:0}</b> <size=13>km/h</size>"; break;
+                case SpeedUnit.MetresPerSecond: speed = $"<b>{_speed:0.0}</b> <size=13>m/s</size>"; break;
+                default: speed = $"<b>{_speed * 1.944f:0.0}</b> <size=13>kn</size>"; break;
+            }
+            Ui.Label(r, speed, _big);
+
+            string mode;
+            switch (_ship.GetSpeedSetting())
+            {
+                case Ship.Speed.Full: mode = "Full sail"; break;
+                case Ship.Speed.Half: mode = "Half sail"; break;
+                case Ship.Speed.Slow: mode = "Rowing"; break;
+                case Ship.Speed.Back: mode = "Rowing back"; break;
+                default: mode = _anchored ? "At anchor" : "Sail down"; break;
+            }
+            Ui.Label(r, $"{mode}  <color={Ui.Muted}>|</color>  {_heading:000}°", _textCenter);
+
+            string strength = _wind < 0.25f ? "calm" : _wind < 0.5f ? "light" : _wind < 0.75f ? "fresh" : "strong";
+            Ui.Label(r, $"Wind <color={Ui.Info}>{strength}</color>", _textRight);
         }
 
         // -90°..+90° track: the green zone is the best angle for the wind, the needle is the sail. A/D moves the needle.

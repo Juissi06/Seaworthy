@@ -22,7 +22,7 @@ Rules for every feature:
 - [x] Server-enforced settings, dedicated servers supported
 
 ## Now
-1. [ ] **Helm panel**: speed (knots), compass strip with heading and wind, sail mode, trim gauge, anchor state.
+1. [x] **Helm panel**: speed (knots), compass strip with heading and wind, sail mode, trim gauge, anchor state.
 2. [ ] **Lookout**: larger map reveal radius while aboard, scaled by ship (raft < karve < longship).
 3. [ ] **Sailing skill**: a real skill in the skills list. Levels with distance sailed; raises sail force and rowing speed a little (default +20% at 100).
 4. [ ] **Push off**: at the helm of a beached ship, hold a key to shove it back into deeper water.

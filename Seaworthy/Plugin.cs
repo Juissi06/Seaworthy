@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Seaworthy
 {
+    internal enum SpeedUnit { Knots, KilometresPerHour, MetresPerSecond }
+
     [BepInPlugin(Guid, "Seaworthy", ModInfo.Version)]
     [BepInProcess("valheim.exe")]
     [BepInProcess("valheim_server.exe")] // the server decides the sailing rules
@@ -23,8 +25,11 @@ namespace Seaworthy
         internal static ConfigEntry<float> TrimSpeed;
         internal static ConfigEntry<float> PerfectTrimBonus;
         internal static ConfigEntry<float> TrimTolerance;
-        internal static ConfigEntry<bool> ShowTrimGauge;
-        internal static ConfigEntry<float> GaugeY;
+
+        // Helm panel
+        internal static ConfigEntry<bool> ShowHelmPanel;
+        internal static ConfigEntry<float> PanelY;
+        internal static ConfigEntry<SpeedUnit> SpeedUnits;
 
         // Anchor
         internal static ConfigEntry<bool> AnchorEnabled;
@@ -42,7 +47,7 @@ namespace Seaworthy
             ModEnabled = Config.Bind("General", "Enabled", true,
                 "Turn Seaworthy on or off. Off means vanilla sailing. Everyone on a ship should use the same setting.");
             UiScale = Config.Bind("General", "UI scale", 1f,
-                new ConfigDescription("Size of the trim gauge.", new AcceptableValueRange<float>(0.5f, 2f)));
+                new ConfigDescription("Size of the helm panel.", new AcceptableValueRange<float>(0.5f, 2f)));
 
             const string trim = "Sail Trim";
             ManualTrim = Config.Bind(trim, "Manual sail trim", true,
@@ -57,11 +62,14 @@ namespace Seaworthy
             TrimTolerance = Config.Bind(trim, "Trim tolerance", 1f,
                 new ConfigDescription("How forgiving a badly trimmed sail is. Higher keeps more speed when the sail is off.",
                     new AcceptableValueRange<float>(0.5f, 2f)));
-            ShowTrimGauge = Config.Bind(trim, "Show trim gauge", true,
-                "At the helm, show the sail angle, the best angle for the wind and how much speed you're getting.");
-            GaugeY = Config.Bind(trim, "Gauge position Y", 0.70f,
-                new ConfigDescription("Vertical position of the trim gauge. 0 = top edge, 1 = bottom edge.",
+
+            const string panel = "Helm Panel";
+            ShowHelmPanel = Config.Bind(panel, "Show helm panel", true,
+                "At the helm, show a panel with a compass, speed, wind, sail trim and anchor.");
+            PanelY = Config.Bind(panel, "Position Y", 0.80f,
+                new ConfigDescription("Vertical position of the helm panel. 0 = top edge, 1 = bottom edge.",
                     new AcceptableValueRange<float>(0f, 1f)));
+            SpeedUnits = Config.Bind(panel, "Speed unit", SpeedUnit.Knots, "Unit for the ship's speed.");
 
             const string anchor = "Anchor";
             AnchorEnabled = Config.Bind(anchor, "Enabled", true, "Let the helmsman drop an anchor that stops the ship and holds it in place.");
