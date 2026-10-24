@@ -12,7 +12,7 @@ Main features
 - Helm panel: compass with your heading, the wind and your course, plus speed, sail mode, wind strength, sail trim and anchor. Built with Valheim's own UI style
 - Sail trim: hold Left Shift and use A/D at the helm to turn the sail. Find the green zone and you sail up to 15% faster than vanilla, miss it and you're slower
 - Gusts: the wind wanders and surges, more in storms, so trimming keeps you busy on long trips (only when you trim yourself)
-- Sailing skill: a new skill that levels while you steer, up to 20% faster sailing and rowing at level 100
+- Sailing skill: a new skill that levels while you steer, up to 20% faster sailing and rowing at level 100, and skilled sailors trimming by hand can sail closer to the wind
 - Anchor: press G at the helm. The ship stops and stays put, even when you leave it. Rope and splash included
 - Push off: stuck on a beach? Hold B at the helm and the crew shoves you back towards deep water
 - Lookout: see more of the map from a ship, longships see twice as far

@@ -88,6 +88,14 @@ namespace Seaworthy
             }
         }
 
+        // Owner: the helmsman's skill, 0..1.
+        internal static float Level01(Ship ship)
+        {
+            if (!ServerSettings.SkillEnabled) return 0f;
+            var nview = SailState.NView(ship);
+            return nview != null && nview.IsValid() ? Mathf.Clamp01(nview.GetZDO().GetFloat(SkillKey)) : 0f;
+        }
+
         // Owner: extra force from the helmsman's skill, 1 when unskilled.
         internal static float ForceFactor(Ship ship)
         {

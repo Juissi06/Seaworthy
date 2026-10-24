@@ -187,7 +187,9 @@ namespace Seaworthy
             Vector3 windDir = trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir();
             float intensity = Mathf.Lerp(0.25f, 1f, EnvMan.instance.GetWindIntensity()) * (trim.HasValue ? Wind.GustStrength : 1f);
             float trimFactor = trim.HasValue ? SailState.ForceFactor(trim.Value, SailState.OptimalTrim(__instance)) : 1f;
-            float factor = WindAngleFactor(windDir, __instance.transform.forward) * intensity * trimFactor * skill;
+            // A skilled helmsman trimming by hand points higher into the wind (see WindAngleFactor).
+            float pointing = trim.HasValue ? SailingSkill.Level01(__instance) : 0f;
+            float factor = WindAngleFactor(windDir, __instance.transform.forward, pointing) * intensity * trimFactor * skill;
             Vector3 target = Vector3.Normalize(windDir + __instance.transform.forward) * (factor * __instance.m_sailForceFactor * sailSize);
             ref Vector3 force = ref SailForce(__instance);
             force = Vector3.SmoothDamp(force, target, ref WindChangeVelocity(__instance), 1f, 99f);
@@ -196,10 +198,12 @@ namespace Seaworthy
         }
 
         // Ship.GetWindAngleFactor for a given wind: best across the wind, 70% straight downwind, none into it.
-        static float WindAngleFactor(Vector3 windDir, Vector3 forward)
+        // Vanilla's no-go zone starts about 41° either side of the wind (d = 0.75); skill 100 moves it to about 34°.
+        internal static float WindAngleFactor(Vector3 windDir, Vector3 forward, float pointing)
         {
             float d = Vector3.Dot(windDir, -forward);
-            return Mathf.Lerp(0.7f, 1f, 1f - Mathf.Abs(d)) * (1f - Utils.LerpStep(0.75f, 0.8f, d));
+            float noGo = 0.75f + 0.08f * pointing;
+            return Mathf.Lerp(0.7f, 1f, 1f - Mathf.Abs(d)) * (1f - Utils.LerpStep(noGo, noGo + 0.05f, d));
         }
     }
 

@@ -17,7 +17,7 @@ namespace Seaworthy
         Ship _ship;
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
-        bool _anchored, _beached;
+        bool _anchored, _beached, _headToWind;
         float _courseDistance, _courseBearing, _courseSpeed;
         float _pushProgress;
         GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight;
@@ -66,6 +66,9 @@ namespace Seaworthy
             // GetWindDir is where the wind blows to. Gusts only matter (and only show) when you trim yourself.
             _windFrom = Compass(-(_trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir()));
             _wind = EnvMan.instance.GetWindIntensity();
+            Vector3 windTo = _trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir();
+            float pointing = _trim.HasValue ? SailingSkill.Level01(_ship) : 0f;
+            _headToWind = _ship.IsSailUp() && SailForcePatch.WindAngleFactor(windTo, _ship.transform.forward, pointing) < 0.05f;
 
             Vector3 pos = _ship.transform.position;
             Course.CheckArrival(pos);
@@ -273,7 +276,9 @@ namespace Seaworthy
             Ui.Label(r, $"{mode}  <color={Ui.Muted}>|</color>  {_heading:000}°", _textCenter);
 
             string strength = _wind < 0.25f ? "calm" : _wind < 0.5f ? "light" : _wind < 0.75f ? "fresh" : "strong";
-            Ui.Label(r, $"Wind <color={Ui.Info}>{strength}</color>", _textRight);
+            Ui.Label(r, _headToWind
+                ? $"<color={Ui.Bad}>Head to wind</color>"  // the sail can't draw: turn away from the wind
+                : $"Wind <color={Ui.Info}>{strength}</color>", _textRight);
         }
 
         // -90°..+90° track: the green zone is the best angle for the wind, the needle is the sail. A/D moves the needle.

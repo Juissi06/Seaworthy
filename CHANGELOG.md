@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Pointing higher: with your own trim, Sailing skill lets you sail closer to the wind (from about 41° to 34° off the wind at skill 100). The helm panel says "Head to wind" when you're too close for the sail to draw.
 - The first time you take a helm each session, a tip lists the controls (can be turned off).
 - Course: Left Alt + click a pin (or any spot) on the large map to set a course. The helm panel marks it on the compass and shows the distance, which way to steer and an ETA. You get a message when you arrive.
 - Gusts: the wind wanders a few degrees and surges, more in storms, so a sail you trim yourself needs attention on long voyages. Ships on auto trim sail like vanilla. Everyone sees the same gusts.
