@@ -119,6 +119,10 @@ namespace Seaworthy
     [HarmonyPatch(typeof(ZNet), "OnDestroy")]
     static class ZNetDestroyPatch
     {
-        static void Postfix() => ServerSettings.Reset();
+        static void Postfix()
+        {
+            ServerSettings.Reset();
+            Course.Clear(); // a course belongs to the world you set it in
+        }
     }
 }

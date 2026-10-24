@@ -13,6 +13,8 @@ namespace Seaworthy
         internal static bool Active;
         internal static Vector3 Target;
         internal static string Name;
+        // A temporary map pin for a course to a spot (a course to a pin already has one). Never saved.
+        static Minimap.PinData _pin;
 
         static readonly Func<Minimap, Vector3, Vector3> ScreenToWorld = Create<Func<Minimap, Vector3, Vector3>>("ScreenToWorldPoint");
         static readonly Func<Minimap, Minimap.PinData> ClosestPinToCursor = Create<Func<Minimap, Minimap.PinData>>("GetClosestPinToCursor");
@@ -47,9 +49,11 @@ namespace Seaworthy
                 return true;
             }
 
+            Clear();
             Active = true;
             Target = point;
-            Name = pin != null && !string.IsNullOrEmpty(pin.m_name) ? Localization.instance.Localize(pin.m_name) : "marked spot";
+            Name = pin != null && !string.IsNullOrEmpty(pin.m_name) ? Localization.instance.Localize(pin.m_name) : "Course";
+            if (pin == null) _pin = map.AddPin(point, Minimap.PinType.Icon3, Name, false, false);
             player?.Message(MessageHud.MessageType.TopLeft, $"<color={Ui.Gold}>Course set</color>: {Name}");
             return true;
         }
@@ -58,6 +62,8 @@ namespace Seaworthy
         {
             Active = false;
             Name = null;
+            if (_pin != null && Minimap.instance != null) Minimap.instance.RemovePin(_pin);
+            _pin = null;
         }
 
         // Called from the helm: arriving ends the course.
