@@ -36,6 +36,9 @@ namespace Seaworthy
         internal static ConfigEntry<KeyboardShortcut> AnchorKey;
         internal static ConfigEntry<float> AnchorHold;
 
+        // Lookout
+        internal static ConfigEntry<float> LookoutBonus;
+
         // Server
         internal static ConfigEntry<bool> EnforceOnClients;
 
@@ -78,6 +81,11 @@ namespace Seaworthy
             AnchorHold = Config.Bind(anchor, "Holding strength", 0.6f,
                 new ConfigDescription("How quickly a dropped anchor stops the ship. Higher stops it faster.",
                     new AcceptableValueRange<float>(0.1f, 3f)));
+
+            LookoutBonus = Config.Bind("Lookout", "Map reveal bonus at sea", 1f,
+                new ConfigDescription("While aboard, the map reveals this much more around you, scaled by ship size: " +
+                    "1 = a longship reveals twice the normal radius, a raft about 20% more. 0 = vanilla.",
+                    new AcceptableValueRange<float>(0f, 3f)));
 
             EnforceOnClients = Config.Bind("Server", "Enforce on clients", true,
                 "Server/host only: players on your server use your sail trim and anchor settings instead of their own, " +

@@ -10,11 +10,11 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 1;
+        const int Format = 2;
 
         static bool _fromServer, _requested;
         static bool _manualTrim, _anchorEnabled;
-        static float _trimSpeed, _bonus, _tolerance, _anchorHold;
+        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
@@ -22,6 +22,7 @@ namespace Seaworthy
         internal static float TrimTolerance => _fromServer ? _tolerance : Plugin.TrimTolerance.Value;
         internal static bool AnchorEnabled => _fromServer ? _anchorEnabled : Plugin.AnchorEnabled.Value;
         internal static float AnchorHold => _fromServer ? _anchorHold : Plugin.AnchorHold.Value;
+        internal static float LookoutBonus => _fromServer ? _lookout : Plugin.LookoutBonus.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -65,6 +66,7 @@ namespace Seaworthy
             pkg.Write(Plugin.TrimTolerance.Value);
             pkg.Write(Plugin.AnchorEnabled.Value);
             pkg.Write(Plugin.AnchorHold.Value);
+            pkg.Write(Plugin.LookoutBonus.Value);
             return pkg;
         }
 
@@ -82,6 +84,7 @@ namespace Seaworthy
             _tolerance = Mathf.Clamp(pkg.ReadSingle(), 0.5f, 2f);
             _anchorEnabled = pkg.ReadBool();
             _anchorHold = Mathf.Clamp(pkg.ReadSingle(), 0.1f, 3f);
+            _lookout = Mathf.Clamp(pkg.ReadSingle(), 0f, 3f);
             bool first = !_fromServer;
             _fromServer = true;
             if (first)
