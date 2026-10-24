@@ -1,27 +1,36 @@
 # Seaworthy
 
 THIS MOD IS STILL IN ALPHA
-Seaworthy makes sailing a skill instead of holding W. Trim the sail yourself to catch the wind properly and you'll sail faster than vanilla, trim it badly and you'll crawl. Drop anchor to stop and hold your ship anywhere. Leave the sail alone and it sails exactly like vanilla.
+Seaworthy is the sailing overhaul Valheim never got: everything the popular sailing mods do, in one mod that looks like part of the game. Trim the sail yourself for extra speed, level up a Sailing skill, drop anchor anywhere, push off beaches, see more of the coast and steer for a map pin with a proper helm panel. Leave it all alone and your ship sails exactly like vanilla.
 
 Installation:
 - Mod managers; automatic install
 - Manual: Put the DLL file to \Steam\steamapps\common\Valheim\BepInEx\plugins
-- Everyone on the ship should have it: the player who runs the ship's physics decides how it sails
-- Install it on the server too: then the server's settings apply to everyone, so nobody sails faster with their own config
+- Multiplayer: everyone on the ship should have it, and install it on the server too so the server's settings apply to everyone
 
 Main features
-- Sail trim: at the helm hold Left Shift and use A/D to turn the sail instead of the rudder
-- Trim gauge shows your sail angle, the best angle for the current wind (green) and how much speed you're getting
-- A perfectly trimmed sail gives up to 15% more speed than vanilla (configurable, 0 = never faster than vanilla)
-- Furl the sail and trim goes back to automatic, so you're never stuck with a bad angle
-- Anchor: press G at the helm to drop or raise it. The ship slows to a stop and stays put, even when you leave the helm. You see the rope and hear the splash
-- Server decides the rules: on a server with Seaworthy, its trim and anchor settings apply to every player (your keys and UI stay yours)
-- Turn the whole mod off in the config and it's vanilla sailing again, no restart needed
-- Config file: BepInEx/config/Seaworthy.cfg
+- Helm panel: compass with your heading, the wind and your course, plus speed, sail mode, wind strength, sail trim and anchor. Built with Valheim's own UI style
+- Sail trim: hold Left Shift and use A/D at the helm to turn the sail. Find the green zone and you sail up to 15% faster than vanilla, miss it and you're slower
+- Gusts: the wind wanders and surges, more in storms, so trimming keeps you busy on long trips (only when you trim yourself)
+- Sailing skill: a new skill that levels while you steer, up to 20% faster sailing and rowing at level 100
+- Anchor: press G at the helm. The ship stops and stays put, even when you leave it. Rope and splash included
+- Push off: stuck on a beach? Hold B at the helm and the crew shoves you back towards deep water
+- Lookout: see more of the map from a ship, longships see twice as far
+- Course: Left Alt + click a pin on the map and the helm panel shows the way, the distance and when you'll get there
+- The server decides the rules, so nobody sails faster with their own config
+- Every feature can be turned off, and the whole mod can be switched off in game
+
+Keys (all changeable)
+- Left Shift + A/D at the helm: trim the sail
+- G at the helm: drop / raise anchor
+- B (hold) at the helm of a beached ship: push off
+- Left Alt + click on the large map: set / clear course
 
 Requirements:
 -BepInEx
 -Valheim Configuration Manager (optional, but highly recommended for config)
+
+Config file: BepInEx/config/Seaworthy.cfg
 
 ## Building from source
 Requires the .NET SDK. The project references the game's DLLs from your Valheim install:

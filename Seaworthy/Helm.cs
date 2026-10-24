@@ -13,7 +13,7 @@ namespace Seaworthy
         static readonly Color WindColor = new Color(0.56f, 0.79f, 1f, 1f);
         static readonly Color Cream = new Color(0.96f, 0.93f, 0.86f);
 
-        static bool _namesAdded;
+        static bool _namesAdded, _tipShown;
         Ship _ship;
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
@@ -42,6 +42,7 @@ namespace Seaworthy
             }
             Ui.PrepareArt();
             SailingSkill.Update(player, _ship);
+            if (!_tipShown && Plugin.ShowTips.Value) ShowTip(player);
 
             if (ServerSettings.AnchorEnabled && !Plugin.IsTyping() && Plugin.AnchorKey.Value.IsDown())
             {
@@ -77,6 +78,17 @@ namespace Seaworthy
                 // Speed made good towards the target, for the ETA.
                 _courseSpeed = Vector3.Dot(SailState.Body(_ship)?.linearVelocity ?? Vector3.zero, toTarget.normalized);
             }
+        }
+
+        static void ShowTip(Player player)
+        {
+            _tipShown = true;
+            var tips = new System.Collections.Generic.List<string>();
+            if (ServerSettings.ManualTrim) tips.Add($"{Plugin.TrimModifier.Value} + A/D trims the sail");
+            if (ServerSettings.AnchorEnabled) tips.Add($"{Plugin.AnchorKey.Value} drops the anchor");
+            if (Plugin.CourseModifier.Value != KeyCode.None) tips.Add($"{Plugin.CourseModifier.Value} + click on the map sets a course");
+            if (tips.Count > 0)
+                player.Message(MessageHud.MessageType.TopLeft, $"<color={Ui.Gold}>Seaworthy</color>: " + string.Join(", ", tips));
         }
 
         // 0 = north (+z), clockwise.

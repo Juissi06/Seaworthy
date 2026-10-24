@@ -30,6 +30,7 @@ namespace Seaworthy
         internal static ConfigEntry<bool> ShowHelmPanel;
         internal static ConfigEntry<float> PanelY;
         internal static ConfigEntry<SpeedUnit> SpeedUnits;
+        internal static ConfigEntry<bool> ShowTips;
 
         // Anchor
         internal static ConfigEntry<bool> AnchorEnabled;
@@ -88,6 +89,7 @@ namespace Seaworthy
                 new ConfigDescription("Vertical position of the helm panel. 0 = top edge, 1 = bottom edge.",
                     new AcceptableValueRange<float>(0f, 1f)));
             SpeedUnits = Config.Bind(panel, "Speed unit", SpeedUnit.Knots, "Unit for the ship's speed.");
+            ShowTips = Config.Bind(panel, "Show tips", true, "The first time you take a helm each session, list Seaworthy's controls.");
 
             const string anchor = "Anchor";
             AnchorEnabled = Config.Bind(anchor, "Enabled", true, "Let the helmsman drop an anchor that stops the ship and holds it in place.");

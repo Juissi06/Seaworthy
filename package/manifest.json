@@ -2,7 +2,7 @@
   "name": "Seaworthy",
   "version_number": "$version$",
   "website_url": "",
-  "description": "Sail like a Viking: trim the sail yourself for extra speed, and drop anchor to hold your ship in place.",
+  "description": "Sailing overhaul: trim your sail, Sailing skill, anchor, push off beaches, see further at sea, steer for a map pin, all in a helm panel in Valheim's own style. Vanilla when untouched.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2351"
   ]
