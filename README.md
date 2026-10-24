@@ -31,7 +31,7 @@ Keys (all changeable)
 
 Works with other mods
 - If you already use a mod that names ships, reveals more map at sea, adds a sailing skill or anchors, Seaworthy turns its own version off (you can turn that off in the config)
-- Tested to load alongside Norse Sense
+- Made to run alongside Norse Sense (same look, no overlapping features)
 
 Requirements:
 -BepInEx
