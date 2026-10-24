@@ -58,7 +58,7 @@ namespace Seaworthy
         // Server
         internal static ConfigEntry<bool> EnforceOnClients;
 
-        Harmony _harmony;
+        Harmony _harmony, _skillHarmony;
         GameObject _root;
 
         void Awake()
@@ -133,6 +133,8 @@ namespace Seaworthy
             DontDestroyOnLoad(_root);
             _root.AddComponent<Helm>();
 
+            _skillHarmony = new Harmony(Guid + ".skill");
+            SkillPatches.Apply(_skillHarmony);
             _harmony = new Harmony(Guid);
             ModEnabled.SettingChanged += (s, e) => ApplyEnabled();
             ApplyEnabled();
@@ -158,6 +160,7 @@ namespace Seaworthy
         void OnDestroy()
         {
             _harmony?.UnpatchSelf();
+            _skillHarmony?.UnpatchSelf();
             if (_root != null) Destroy(_root);
         }
 

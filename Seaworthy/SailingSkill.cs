@@ -98,33 +98,45 @@ namespace Seaworthy
         }
     }
 
+    // These three stay patched even with Seaworthy switched off (see SkillPatches.Apply): otherwise saving the
+    // character would drop the Sailing skill and its progress.
+    internal static class SkillPatches
+    {
+        internal static void Apply(Harmony harmony)
+        {
+            harmony.Patch(AccessTools.Method(typeof(Skills), "IsSkillValid"),
+                postfix: new HarmonyMethod(typeof(SkillValidPatch), nameof(SkillValidPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(Skills), "GetSkillDef"),
+                postfix: new HarmonyMethod(typeof(SkillDefPatch), nameof(SkillDefPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(Localization), nameof(Localization.SetupLanguage)),
+                postfix: new HarmonyMethod(typeof(SkillNamePatch), nameof(SkillNamePatch.Postfix)));
+        }
+    }
+
     // Saved characters list the skill by number; let the game accept ours.
-    [HarmonyPatch(typeof(Skills), "IsSkillValid")]
     static class SkillValidPatch
     {
-        static void Postfix(Skills.SkillType type, ref bool __result)
+        internal static void Postfix(Skills.SkillType type, ref bool __result)
         {
             if (type == SailingSkill.Type) __result = true;
         }
     }
 
-    [HarmonyPatch(typeof(Skills), "GetSkillDef")]
     static class SkillDefPatch
     {
-        static void Postfix(Skills.SkillType type, ref Skills.SkillDef __result)
+        internal static void Postfix(Skills.SkillType type, ref Skills.SkillDef __result)
         {
             if (__result == null && type == SailingSkill.Type) __result = SailingSkill.Def;
         }
     }
 
     // The skills list shows "$skill_<id>"; give it a name in every language load.
-    [HarmonyPatch(typeof(Localization), nameof(Localization.SetupLanguage))]
     static class SkillNamePatch
     {
         static readonly AccessTools.FieldRef<Localization, Dictionary<string, string>> Words =
             AccessTools.FieldRefAccess<Localization, Dictionary<string, string>>("m_translations");
 
-        static void Postfix(Localization __instance) => SailingSkill.AddTranslations(Words(__instance));
+        internal static void Postfix(Localization __instance) => SailingSkill.AddTranslations(Words(__instance));
 
         internal static void AddNow()
         {
