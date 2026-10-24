@@ -10,11 +10,11 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 7;
+        const int Format = 8;
 
         static bool _fromServer, _requested;
         static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff, _gusts, _cargo;
-        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus, _gustAngle, _cargoPenalty, _crewRowing;
+        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus, _gustAngle, _cargoPenalty, _crewRowing, _waveDamage = 1f;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
@@ -31,6 +31,7 @@ namespace Seaworthy
         internal static bool CargoWeight => _fromServer ? _cargo : Plugin.CargoWeight.Value;
         internal static float CargoPenalty => _fromServer ? _cargoPenalty : Plugin.CargoPenalty.Value;
         internal static float CrewRowing => _fromServer ? _crewRowing : Plugin.CrewRowing.Value;
+        internal static float WaveDamage => _fromServer ? _waveDamage : Plugin.WaveDamage.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -83,6 +84,7 @@ namespace Seaworthy
             pkg.Write(Plugin.CargoWeight.Value);
             pkg.Write(Plugin.CargoPenalty.Value);
             pkg.Write(Plugin.CrewRowing.Value);
+            pkg.Write(Plugin.WaveDamage.Value);
             return pkg;
         }
 
@@ -109,6 +111,7 @@ namespace Seaworthy
             _cargo = pkg.ReadBool();
             _cargoPenalty = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.6f);
             _crewRowing = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.25f);
+            _waveDamage = Mathf.Clamp01(pkg.ReadSingle());
             bool first = !_fromServer;
             _fromServer = true;
             if (first)

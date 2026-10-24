@@ -156,22 +156,28 @@ namespace Seaworthy
     }
 
     // Owner: rowing is faster with skill and with more crew aboard (and slower with a heavy hold, if that option
-    // is on). Scales the rowing force for this physics step only.
+    // is on), and wave damage follows the server's setting. Both scaled for this physics step only.
     [HarmonyPatch(typeof(Ship), nameof(Ship.CustomFixedUpdate))]
     static class RowingSkillPatch
     {
         const int MaxExtraCrew = 3;
         static readonly AccessTools.FieldRef<Ship, List<Player>> Players = AccessTools.FieldRefAccess<Ship, List<Player>>("m_players");
 
-        static void Prefix(Ship __instance, out float __state)
+        static void Prefix(Ship __instance, out Vector2 __state)
         {
-            __state = __instance.m_backwardForce;
+            __state = new Vector2(__instance.m_backwardForce, __instance.m_waterImpactDamage);
             if (!__instance.IsOwner()) return;
+            // Owner applies wave damage, so scaling it here covers everyone aboard.
+            __instance.m_waterImpactDamage = __state.y * ServerSettings.WaveDamage;
             int extraCrew = Mathf.Clamp(Players(__instance).Count - 1, 0, MaxExtraCrew);
             float crew = 1f + ServerSettings.CrewRowing * extraCrew;
-            __instance.m_backwardForce = __state * SailingSkill.ForceFactor(__instance) * crew * Cargo.SpeedFactor(__instance);
+            __instance.m_backwardForce = __state.x * SailingSkill.ForceFactor(__instance) * crew * Cargo.SpeedFactor(__instance);
         }
 
-        static void Finalizer(Ship __instance, float __state) => __instance.m_backwardForce = __state;
+        static void Finalizer(Ship __instance, Vector2 __state)
+        {
+            __instance.m_backwardForce = __state.x;
+            __instance.m_waterImpactDamage = __state.y;
+        }
     }
 }

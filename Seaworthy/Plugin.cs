@@ -60,6 +60,8 @@ namespace Seaworthy
         internal static ConfigEntry<float> SkillBonus;
         internal static ConfigEntry<float> CrewRowing;
 
+        internal static ConfigEntry<float> WaveDamage;
+
         // Cargo
         internal static ConfigEntry<bool> CargoWeight;
         internal static ConfigEntry<float> CargoPenalty;
@@ -143,6 +145,10 @@ namespace Seaworthy
             SkillBonus = Config.Bind("Sailing Skill", "Speed bonus at level 100", 0.2f,
                 new ConfigDescription("Extra sail force and rowing speed at skill 100, scaling up from 0 at skill 0.",
                     new AcceptableValueRange<float>(0f, 0.5f)));
+
+            WaveDamage = Config.Bind("Wind", "Wave damage", 1f,
+                new ConfigDescription("Hull damage from slamming into waves. 1 = vanilla, 0.5 = half, 0 = none.",
+                    new AcceptableValueRange<float>(0f, 1f)));
 
             CargoWeight = Config.Bind("Cargo", "Cargo slows ships", false,
                 "Realism option: a heavily loaded hold makes the ship slower under sail and oars. Off = vanilla.");

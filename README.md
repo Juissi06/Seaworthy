@@ -20,6 +20,7 @@ Main features
 - Ship lanterns: a warm glow at the stern after dark
 - Ship names: name your ship, everyone sees it
 - Course: Left Alt + click a pin on the map and the helm panel shows the way, the distance and when you'll get there
+- Wave damage setting: 1 = vanilla, lower it if the waves annoy you
 - Cargo weight (optional): turn it on and a full hold slows the ship down
 - The server decides the rules, so nobody sails faster with their own config
 - Every feature can be turned off, and the whole mod can be switched off in game

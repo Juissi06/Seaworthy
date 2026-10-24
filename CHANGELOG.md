@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Wave damage setting: scale the hull damage from slamming into waves (1 = vanilla).
 - Helm panel is smaller by default (UI scale 0.85) and the trim key hint disappears once you've trimmed.
 - Crew rowing: each extra player aboard makes rowing 10% faster (up to 3 extra).
 - Cargo weight (optional, off by default): a heavily loaded hold makes the ship slower; the helm panel shows how full the hold is.
