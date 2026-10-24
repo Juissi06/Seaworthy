@@ -17,6 +17,7 @@ namespace Seaworthy
         void Update()
         {
             var player = Player.m_localPlayer;
+            if (player != null) ServerSettings.RequestIfNeeded();
             _ship = player != null ? player.GetControlledShip() : null;
             if (_ship == null)
             {
@@ -25,7 +26,7 @@ namespace Seaworthy
             }
             Ui.PrepareArt();
 
-            if (Plugin.AnchorEnabled.Value && !Plugin.IsTyping() && Plugin.AnchorKey.Value.IsDown())
+            if (ServerSettings.AnchorEnabled && !Plugin.IsTyping() && Plugin.AnchorKey.Value.IsDown())
             {
                 bool down = !SailState.IsAnchored(_ship);
                 SailState.SendAnchor(_ship, down);
@@ -35,7 +36,7 @@ namespace Seaworthy
             }
 
             _anchored = SailState.IsAnchored(_ship);
-            _trim = Plugin.ManualTrim.Value ? SailState.GetTrim(_ship) : null;
+            _trim = ServerSettings.ManualTrim ? SailState.GetTrim(_ship) : null;
             _optimal = SailState.OptimalTrim(_ship);
             _efficiency = _trim.HasValue ? SailState.ForceFactor(_trim.Value, _optimal) : 1f;
         }
@@ -45,7 +46,7 @@ namespace Seaworthy
             if (_ship == null || !Plugin.ShowTrimGauge.Value) return;
             if (Hud.IsUserHidden() || Menu.IsVisible() || InventoryGui.IsVisible() || Minimap.IsOpen()) return;
             bool sailUp = _ship.IsSailUp();
-            bool showTrim = Plugin.ManualTrim.Value && sailUp;
+            bool showTrim = ServerSettings.ManualTrim && sailUp;
             if (!showTrim && !_anchored) return;
 
             if (_right == null) _right = new GUIStyle(Ui.Small) { alignment = TextAnchor.MiddleRight };
@@ -96,7 +97,7 @@ namespace Seaworthy
 
             float Pos(float angle) => r.x + (angle + SailState.MaxTrim) / (SailState.MaxTrim * 2f) * r.width;
             // Zone where the sail still gives 85% or more (cos² ≥ 0.85 → about 22° each way, times tolerance).
-            float half = 22.8f * Plugin.TrimTolerance.Value;
+            float half = 22.8f * ServerSettings.TrimTolerance;
             float from = Pos(Mathf.Max(-SailState.MaxTrim, _optimal - half));
             float to = Pos(Mathf.Min(SailState.MaxTrim, _optimal + half));
             Color old = GUI.color;

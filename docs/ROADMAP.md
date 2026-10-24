@@ -7,7 +7,7 @@ Seaworthy turns sailing into a skill while keeping vanilla balance as the baseli
 - [x] Anchor (G at the helm)
 
 ## Next
-1. [ ] **Server-enforced settings** (ServerSync): the server decides the trim bonus and anchor so nobody sails faster with their own config. Needed before a public release.
+1. [x] **Server-enforced settings**: the server decides the trim and anchor rules (own small sync, no extra library).
 2. [ ] **Anchor model and sound**: a visible anchor chain/rope and a splash when dropped.
 3. [ ] **Upwind sailing (tacking)**: today vanilla's no-go zone (about 40° either side of the wind) stays. A trimmed sail could point a little higher, with less speed.
 4. [ ] **Gamepad support** for trimming.

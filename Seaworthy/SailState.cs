@@ -69,14 +69,14 @@ namespace Seaworthy
         // Share of the sail's force kept at this trim: 1 when perfect, 0 when 90° off (scaled by tolerance).
         internal static float TrimEfficiency(float trim, float optimal)
         {
-            float error = Mathf.Abs(Mathf.DeltaAngle(trim, optimal)) / Plugin.TrimTolerance.Value;
+            float error = Mathf.Abs(Mathf.DeltaAngle(trim, optimal)) / ServerSettings.TrimTolerance;
             float c = Mathf.Cos(Mathf.Min(error, 90f) * Mathf.Deg2Rad);
             return c * c;
         }
 
         // Multiplier on vanilla's sail force: efficiency, plus the bonus for a well trimmed sail.
         internal static float ForceFactor(float trim, float optimal) =>
-            TrimEfficiency(trim, optimal) * (1f + Plugin.PerfectTrimBonus.Value);
+            TrimEfficiency(trim, optimal) * (1f + ServerSettings.PerfectTrimBonus);
 
         internal static Quaternion MastRotation(Ship ship, float trim)
         {
@@ -120,7 +120,7 @@ namespace Seaworthy
         static void Prefix(Ship __instance, ref Vector3 dir)
         {
             bool forward = dir.z > 0.5f;
-            if (Plugin.AnchorEnabled.Value && forward && !_forwardHeld && SailState.IsAnchored(__instance) &&
+            if (ServerSettings.AnchorEnabled && forward && !_forwardHeld && SailState.IsAnchored(__instance) &&
                 Time.time - _anchorMessage > 2f && Player.m_localPlayer != null)
             {
                 _anchorMessage = Time.time;
@@ -129,7 +129,7 @@ namespace Seaworthy
             }
             _forwardHeld = forward;
 
-            if (!Plugin.ManualTrim.Value) return;
+            if (!ServerSettings.ManualTrim) return;
             if (!__instance.IsSailUp())
             {
                 SailState.LocalManual = false; // furling the sail hands trim back to the game
@@ -152,7 +152,7 @@ namespace Seaworthy
                 SailState.LocalManual = true;
                 SailState.LocalTrim = SailState.OptimalTrim(__instance);
             }
-            SailState.LocalTrim = Mathf.Clamp(SailState.LocalTrim + dir.x * Plugin.TrimSpeed.Value * Time.fixedDeltaTime,
+            SailState.LocalTrim = Mathf.Clamp(SailState.LocalTrim + dir.x * ServerSettings.TrimSpeed * Time.fixedDeltaTime,
                 -SailState.MaxTrim, SailState.MaxTrim);
             SailState.LocalEditedAt = Time.time;
             dir.x = 0f; // the rudder holds while you trim
@@ -176,7 +176,7 @@ namespace Seaworthy
 
         static bool Prefix(Ship __instance, float sailSize, ref Vector3 __result)
         {
-            float? trim = Plugin.ManualTrim.Value ? SailState.GetTrim(__instance) : null;
+            float? trim = ServerSettings.ManualTrim ? SailState.GetTrim(__instance) : null;
             if (!trim.HasValue) return true;
 
             // Same as Ship.GetSailForce, times the trim factor.
@@ -197,7 +197,7 @@ namespace Seaworthy
     {
         static void Postfix(Ship __instance, float dt)
         {
-            if (!Plugin.ManualTrim.Value || !__instance.IsSailUp() || __instance.m_mastObject == null) return;
+            if (!ServerSettings.ManualTrim || !__instance.IsSailUp() || __instance.m_mastObject == null) return;
             float? trim = SailState.GetTrim(__instance);
             if (!trim.HasValue) return;
             Transform mast = __instance.m_mastObject.transform;
@@ -213,12 +213,12 @@ namespace Seaworthy
         {
             if (!__instance.IsOwner()) return;
             if (!__instance.IsSailUp()) SailState.ClearManual(__instance);
-            if (!Plugin.AnchorEnabled.Value || !SailState.IsAnchored(__instance)) return;
+            if (!ServerSettings.AnchorEnabled || !SailState.IsAnchored(__instance)) return;
 
             SailState.SpeedSetting(__instance) = Ship.Speed.Stop;
             var body = SailState.Body(__instance);
             if (body == null) return;
-            float hold = Plugin.AnchorHold.Value;
+            float hold = ServerSettings.AnchorHold;
             Vector3 v = body.linearVelocity;
             body.AddForce(new Vector3(-v.x, 0f, -v.z) * hold, ForceMode.Acceleration);
             body.AddTorque(new Vector3(0f, -body.angularVelocity.y * hold, 0f), ForceMode.Acceleration);

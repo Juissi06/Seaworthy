@@ -7,9 +7,11 @@ namespace Seaworthy
 {
     [BepInPlugin(Guid, "Seaworthy", ModInfo.Version)]
     [BepInProcess("valheim.exe")]
+    [BepInProcess("valheim_server.exe")] // the server decides the sailing rules
     public class Plugin : BaseUnityPlugin
     {
-        const string Guid = "juissi.seaworthy";
+        // Also names the config file: BepInEx/config/Seaworthy.cfg.
+        const string Guid = "Seaworthy";
 
         // General
         internal static ConfigEntry<bool> ModEnabled;
@@ -28,6 +30,9 @@ namespace Seaworthy
         internal static ConfigEntry<bool> AnchorEnabled;
         internal static ConfigEntry<KeyboardShortcut> AnchorKey;
         internal static ConfigEntry<float> AnchorHold;
+
+        // Server
+        internal static ConfigEntry<bool> EnforceOnClients;
 
         Harmony _harmony;
         GameObject _root;
@@ -65,6 +70,11 @@ namespace Seaworthy
             AnchorHold = Config.Bind(anchor, "Holding strength", 0.6f,
                 new ConfigDescription("How quickly a dropped anchor stops the ship. Higher stops it faster.",
                     new AcceptableValueRange<float>(0.1f, 3f)));
+
+            EnforceOnClients = Config.Bind("Server", "Enforce on clients", true,
+                "Server/host only: players on your server use your sail trim and anchor settings instead of their own, " +
+                "so nobody sails faster with their own config.");
+            Config.SettingChanged += (s, e) => ServerSettings.Broadcast(); // server only, see Broadcast
 
             _root = new GameObject("Seaworthy");
             DontDestroyOnLoad(_root);

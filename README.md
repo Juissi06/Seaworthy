@@ -7,6 +7,7 @@ Installation:
 - Mod managers; automatic install
 - Manual: Put the DLL file to \Steam\steamapps\common\Valheim\BepInEx\plugins
 - Everyone on the ship should have it: the player who runs the ship's physics decides how it sails
+- Install it on the server too: then the server's settings apply to everyone, so nobody sails faster with their own config
 
 Main features
 - Sail trim: at the helm hold Left Shift and use A/D to turn the sail instead of the rudder
@@ -14,7 +15,9 @@ Main features
 - A perfectly trimmed sail gives up to 15% more speed than vanilla (configurable, 0 = never faster than vanilla)
 - Furl the sail and trim goes back to automatic, so you're never stuck with a bad angle
 - Anchor: press G at the helm to drop or raise it. The ship slows to a stop and stays put, even when you leave the helm
+- Server decides the rules: on a server with Seaworthy, its trim and anchor settings apply to every player (your keys and UI stay yours)
 - Turn the whole mod off in the config and it's vanilla sailing again, no restart needed
+- Config file: BepInEx/config/Seaworthy.cfg
 
 Requirements:
 -BepInEx
