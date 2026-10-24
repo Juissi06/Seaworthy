@@ -1,0 +1,9 @@
+{
+  "name": "Seaworthy",
+  "version_number": "$version$",
+  "website_url": "",
+  "description": "Sail like a Viking: trim the sail yourself for extra speed, and drop anchor to hold your ship in place.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2351"
+  ]
+}

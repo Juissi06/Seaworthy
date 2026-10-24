@@ -1,0 +1,101 @@
+using BepInEx;
+using BepInEx.Configuration;
+using HarmonyLib;
+using UnityEngine;
+
+namespace Seaworthy
+{
+    [BepInPlugin(Guid, "Seaworthy", ModInfo.Version)]
+    [BepInProcess("valheim.exe")]
+    public class Plugin : BaseUnityPlugin
+    {
+        const string Guid = "juissi.seaworthy";
+
+        // General
+        internal static ConfigEntry<bool> ModEnabled;
+        internal static ConfigEntry<float> UiScale;
+
+        // Sail trim
+        internal static ConfigEntry<bool> ManualTrim;
+        internal static ConfigEntry<KeyCode> TrimModifier;
+        internal static ConfigEntry<float> TrimSpeed;
+        internal static ConfigEntry<float> PerfectTrimBonus;
+        internal static ConfigEntry<float> TrimTolerance;
+        internal static ConfigEntry<bool> ShowTrimGauge;
+        internal static ConfigEntry<float> GaugeY;
+
+        // Anchor
+        internal static ConfigEntry<bool> AnchorEnabled;
+        internal static ConfigEntry<KeyboardShortcut> AnchorKey;
+        internal static ConfigEntry<float> AnchorHold;
+
+        Harmony _harmony;
+        GameObject _root;
+
+        void Awake()
+        {
+            ModEnabled = Config.Bind("General", "Enabled", true,
+                "Turn Seaworthy on or off. Off means vanilla sailing. Everyone on a ship should use the same setting.");
+            UiScale = Config.Bind("General", "UI scale", 1f,
+                new ConfigDescription("Size of the trim gauge.", new AcceptableValueRange<float>(0.5f, 2f)));
+
+            const string trim = "Sail Trim";
+            ManualTrim = Config.Bind(trim, "Manual sail trim", true,
+                "Set the sail angle yourself instead of the game doing it. A well trimmed sail is faster than vanilla, a badly trimmed one is slower.");
+            TrimModifier = Config.Bind(trim, "Trim modifier", KeyCode.LeftShift,
+                "Hold this at the helm to turn the sail with the steering keys (A/D) instead of the rudder.");
+            TrimSpeed = Config.Bind(trim, "Trim speed", 45f,
+                new ConfigDescription("How fast the sail turns, in degrees per second.", new AcceptableValueRange<float>(10f, 180f)));
+            PerfectTrimBonus = Config.Bind(trim, "Perfect trim bonus", 0.15f,
+                new ConfigDescription("Extra sail force with a perfectly trimmed sail, on top of vanilla. 0 = never faster than vanilla.",
+                    new AcceptableValueRange<float>(0f, 0.5f)));
+            TrimTolerance = Config.Bind(trim, "Trim tolerance", 1f,
+                new ConfigDescription("How forgiving a badly trimmed sail is. Higher keeps more speed when the sail is off.",
+                    new AcceptableValueRange<float>(0.5f, 2f)));
+            ShowTrimGauge = Config.Bind(trim, "Show trim gauge", true,
+                "At the helm, show the sail angle, the best angle for the wind and how much speed you're getting.");
+            GaugeY = Config.Bind(trim, "Gauge position Y", 0.70f,
+                new ConfigDescription("Vertical position of the trim gauge. 0 = top edge, 1 = bottom edge.",
+                    new AcceptableValueRange<float>(0f, 1f)));
+
+            const string anchor = "Anchor";
+            AnchorEnabled = Config.Bind(anchor, "Enabled", true, "Let the helmsman drop an anchor that stops the ship and holds it in place.");
+            AnchorKey = Config.Bind(anchor, "Anchor key", new KeyboardShortcut(KeyCode.G),
+                "At the helm: drop or raise the anchor.");
+            AnchorHold = Config.Bind(anchor, "Holding strength", 0.6f,
+                new ConfigDescription("How quickly a dropped anchor stops the ship. Higher stops it faster.",
+                    new AcceptableValueRange<float>(0.1f, 3f)));
+
+            _root = new GameObject("Seaworthy");
+            DontDestroyOnLoad(_root);
+            _root.AddComponent<Helm>();
+
+            _harmony = new Harmony(Guid);
+            ModEnabled.SettingChanged += (s, e) => ApplyEnabled();
+            ApplyEnabled();
+        }
+
+        bool _patched;
+
+        // Off removes every patch, so the ship sails exactly like vanilla.
+        void ApplyEnabled()
+        {
+            bool on = ModEnabled.Value;
+            if (on && !_patched) _harmony.PatchAll(typeof(Plugin).Assembly);
+            else if (!on && _patched) _harmony.UnpatchSelf();
+            _patched = on;
+            _root.SetActive(on);
+            Logger.LogInfo(on ? "Enabled." : "Disabled: vanilla sailing.");
+        }
+
+        void OnDestroy()
+        {
+            _harmony?.UnpatchSelf();
+            if (_root != null) Destroy(_root);
+        }
+
+        internal static bool IsTyping() =>
+            (Chat.instance != null && Chat.instance.HasFocus()) ||
+            global::Console.IsVisible() || TextInput.IsVisible() || Menu.IsVisible();
+    }
+}
