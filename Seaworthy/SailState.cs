@@ -145,20 +145,22 @@ namespace Seaworthy
                 SailState.LocalTrim = current ?? SailState.OptimalTrim(__instance);
             }
 
-            if (!TrimInput.Held()) return;
-
-            // First touch starts from where the game had the sail, so taking over never jolts it.
-            if (!SailState.LocalManual)
+            if (TrimInput.Held())
             {
-                SailState.LocalManual = true;
-                SailState.LocalTrim = SailState.OptimalTrim(__instance);
+                // First touch starts from where the game had the sail, so taking over never jolts it.
+                if (!SailState.LocalManual)
+                {
+                    SailState.LocalManual = true;
+                    SailState.LocalTrim = SailState.OptimalTrim(__instance);
+                }
+                SailState.LocalTrim = Mathf.Clamp(SailState.LocalTrim + dir.x * ServerSettings.TrimSpeed * Time.fixedDeltaTime,
+                    -SailState.MaxTrim, SailState.MaxTrim);
+                SailState.LocalEditedAt = Time.time;
+                dir.x = 0f; // the rudder holds while you trim
             }
-            SailState.LocalTrim = Mathf.Clamp(SailState.LocalTrim + dir.x * ServerSettings.TrimSpeed * Time.fixedDeltaTime,
-                -SailState.MaxTrim, SailState.MaxTrim);
-            SailState.LocalEditedAt = Time.time;
-            dir.x = 0f; // the rudder holds while you trim
 
-            if (Time.time - _lastSent > 0.15f && !Mathf.Approximately(_sentTrim, SailState.LocalTrim))
+            // Sent at most every 0.15 s, and also after the key is released, so the last adjustment always arrives.
+            if (SailState.LocalManual && Time.time - _lastSent > 0.15f && !Mathf.Approximately(_sentTrim, SailState.LocalTrim))
             {
                 _lastSent = Time.time;
                 _sentTrim = SailState.LocalTrim;

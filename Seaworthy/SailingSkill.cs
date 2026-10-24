@@ -18,7 +18,7 @@ namespace Seaworthy
         static Skills.SkillDef _def;
         static Vector3 _lastPos;
         static Ship _lastShip;
-        static float _distance, _lastSent = -99f, _sentFactor = -1f;
+        static float _distance, _lastSent = -99f, _sentFactor = -1f, _lastUpdate = -99f;
 
         internal static string LocalizationKey => "skill_" + Type.ToString().ToLower();
 
@@ -61,7 +61,10 @@ namespace Seaworthy
         {
             if (!ServerSettings.SkillEnabled) return;
             Vector3 pos = ship.transform.position;
-            if (ship != _lastShip)
+            // Only distance covered while you're actually steering counts.
+            bool resumed = Time.time - _lastUpdate > 0.5f;
+            _lastUpdate = Time.time;
+            if (ship != _lastShip || resumed)
             {
                 _lastShip = ship;
                 _lastPos = pos;
