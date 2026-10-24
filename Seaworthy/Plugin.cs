@@ -39,6 +39,10 @@ namespace Seaworthy
         // Lookout
         internal static ConfigEntry<float> LookoutBonus;
 
+        // Sailing skill
+        internal static ConfigEntry<bool> SkillEnabled;
+        internal static ConfigEntry<float> SkillBonus;
+
         // Server
         internal static ConfigEntry<bool> EnforceOnClients;
 
@@ -86,6 +90,12 @@ namespace Seaworthy
                 new ConfigDescription("While aboard, the map reveals this much more around you, scaled by ship size: " +
                     "1 = a longship reveals twice the normal radius, a raft about 20% more. 0 = vanilla.",
                     new AcceptableValueRange<float>(0f, 3f)));
+
+            SkillEnabled = Config.Bind("Sailing Skill", "Enabled", true,
+                "A Sailing skill that levels while you steer a ship under sail (rowing counts half).");
+            SkillBonus = Config.Bind("Sailing Skill", "Speed bonus at level 100", 0.2f,
+                new ConfigDescription("Extra sail force and rowing speed at skill 100, scaling up from 0 at skill 0.",
+                    new AcceptableValueRange<float>(0f, 0.5f)));
 
             EnforceOnClients = Config.Bind("Server", "Enforce on clients", true,
                 "Server/host only: players on your server use your sail trim and anchor settings instead of their own, " +

@@ -13,6 +13,7 @@ namespace Seaworthy
         static readonly Color WindColor = new Color(0.56f, 0.79f, 1f, 1f);
         static readonly Color Cream = new Color(0.96f, 0.93f, 0.86f);
 
+        static bool _namesAdded;
         Ship _ship;
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
@@ -22,7 +23,15 @@ namespace Seaworthy
         void Update()
         {
             var player = Player.m_localPlayer;
-            if (player != null) ServerSettings.RequestIfNeeded();
+            if (player != null)
+            {
+                ServerSettings.RequestIfNeeded();
+                if (!_namesAdded)
+                {
+                    _namesAdded = true;
+                    SkillNamePatch.AddNow(); // the language loaded before Seaworthy could hook it
+                }
+            }
             _ship = player != null ? player.GetControlledShip() : null;
             if (_ship == null)
             {
@@ -30,6 +39,7 @@ namespace Seaworthy
                 return;
             }
             Ui.PrepareArt();
+            SailingSkill.Update(player, _ship);
 
             if (ServerSettings.AnchorEnabled && !Plugin.IsTyping() && Plugin.AnchorKey.Value.IsDown())
             {

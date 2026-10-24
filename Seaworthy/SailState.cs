@@ -39,6 +39,7 @@ namespace Seaworthy
             {
                 if (nview.IsOwner()) nview.GetZDO().Set(AnchorKey, down);
             });
+            SailingSkill.Register(ship, nview);
         }
 
         // ---------- Trim ----------
@@ -166,7 +167,7 @@ namespace Seaworthy
         }
     }
 
-    // Owner: vanilla's sail force, scaled by how well the sail is trimmed.
+    // Owner: vanilla's sail force, scaled by how well the sail is trimmed and the helmsman's Sailing skill.
     [HarmonyPatch(typeof(Ship), "GetSailForce")]
     static class SailForcePatch
     {
@@ -177,12 +178,14 @@ namespace Seaworthy
         static bool Prefix(Ship __instance, float sailSize, ref Vector3 __result)
         {
             float? trim = ServerSettings.ManualTrim ? SailState.GetTrim(__instance) : null;
-            if (!trim.HasValue) return true;
+            float skill = SailingSkill.ForceFactor(__instance);
+            if (!trim.HasValue && skill == 1f) return true; // untouched ship: vanilla
 
-            // Same as Ship.GetSailForce, times the trim factor.
+            // Same as Ship.GetSailForce, times the trim and skill factors.
             Vector3 windDir = EnvMan.instance.GetWindDir();
             float intensity = Mathf.Lerp(0.25f, 1f, EnvMan.instance.GetWindIntensity());
-            float factor = __instance.GetWindAngleFactor() * intensity * SailState.ForceFactor(trim.Value, SailState.OptimalTrim(__instance));
+            float trimFactor = trim.HasValue ? SailState.ForceFactor(trim.Value, SailState.OptimalTrim(__instance)) : 1f;
+            float factor = __instance.GetWindAngleFactor() * intensity * trimFactor * skill;
             Vector3 target = Vector3.Normalize(windDir + __instance.transform.forward) * (factor * __instance.m_sailForceFactor * sailSize);
             ref Vector3 force = ref SailForce(__instance);
             force = Vector3.SmoothDamp(force, target, ref WindChangeVelocity(__instance), 1f, 99f);

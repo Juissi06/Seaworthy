@@ -24,7 +24,7 @@ Rules for every feature:
 ## Now
 1. [x] **Helm panel**: speed (knots), compass strip with heading and wind, sail mode, trim gauge, anchor state.
 2. [x] **Lookout**: larger map reveal radius while aboard, scaled by ship (raft < karve < longship).
-3. [ ] **Sailing skill**: a real skill in the skills list. Levels with distance sailed; raises sail force and rowing speed a little (default +20% at 100).
+3. [x] **Sailing skill**: a real skill in the skills list. Levels with distance sailed; raises sail force and rowing speed a little (default +20% at 100).
 4. [ ] **Push off**: at the helm of a beached ship, hold a key to shove it back into deeper water.
 5. [ ] **Storm winds**: wind strength follows the weather, with gusts that shift the best trim angle.
 6. [ ] **Course to a pin**: pick a map pin, the helm panel shows bearing, distance and ETA.

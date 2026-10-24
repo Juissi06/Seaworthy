@@ -10,11 +10,11 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 2;
+        const int Format = 3;
 
         static bool _fromServer, _requested;
-        static bool _manualTrim, _anchorEnabled;
-        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout;
+        static bool _manualTrim, _anchorEnabled, _skillEnabled;
+        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
@@ -23,6 +23,8 @@ namespace Seaworthy
         internal static bool AnchorEnabled => _fromServer ? _anchorEnabled : Plugin.AnchorEnabled.Value;
         internal static float AnchorHold => _fromServer ? _anchorHold : Plugin.AnchorHold.Value;
         internal static float LookoutBonus => _fromServer ? _lookout : Plugin.LookoutBonus.Value;
+        internal static bool SkillEnabled => _fromServer ? _skillEnabled : Plugin.SkillEnabled.Value;
+        internal static float SkillBonus => _fromServer ? _skillBonus : Plugin.SkillBonus.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -67,6 +69,8 @@ namespace Seaworthy
             pkg.Write(Plugin.AnchorEnabled.Value);
             pkg.Write(Plugin.AnchorHold.Value);
             pkg.Write(Plugin.LookoutBonus.Value);
+            pkg.Write(Plugin.SkillEnabled.Value);
+            pkg.Write(Plugin.SkillBonus.Value);
             return pkg;
         }
 
@@ -85,6 +89,8 @@ namespace Seaworthy
             _anchorEnabled = pkg.ReadBool();
             _anchorHold = Mathf.Clamp(pkg.ReadSingle(), 0.1f, 3f);
             _lookout = Mathf.Clamp(pkg.ReadSingle(), 0f, 3f);
+            _skillEnabled = pkg.ReadBool();
+            _skillBonus = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.5f);
             bool first = !_fromServer;
             _fromServer = true;
             if (first)
