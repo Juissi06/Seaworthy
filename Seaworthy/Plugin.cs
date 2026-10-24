@@ -92,7 +92,11 @@ namespace Seaworthy
         {
             bool on = ModEnabled.Value;
             if (on && !_patched) _harmony.PatchAll(typeof(Plugin).Assembly);
-            else if (!on && _patched) _harmony.UnpatchSelf();
+            else if (!on && _patched)
+            {
+                _harmony.UnpatchSelf();
+                AnchorVisuals.HideAll();
+            }
             _patched = on;
             _root.SetActive(on);
             Logger.LogInfo(on ? "Enabled." : "Disabled: vanilla sailing.");
