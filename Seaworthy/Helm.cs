@@ -13,7 +13,7 @@ namespace Seaworthy
         static readonly Color WindColor = new Color(0.56f, 0.79f, 1f, 1f);
         static readonly Color Cream = new Color(0.96f, 0.93f, 0.86f);
 
-        static bool _namesAdded, _tipShown;
+        static bool _namesAdded, _tipShown, _trimmedOnce;
         Ship _ship;
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
@@ -119,7 +119,7 @@ namespace Seaworthy
             const float nameH = 24f, hullH = 30f, cargoH = 30f;
             bool showCargo = ServerSettings.CargoWeight && _cargo > 0.01f;
             bool showHull = !NorseSenseHull && _hull < 0.995f;
-            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
+            const float w = 420f, pad = 12f, compassH = 28f, statsH = 28f, trimH = 50f, anchorH = 26f, beachedH = 34f, courseH = 26f;
             bool course = Course.Active;
             float h = (shipName.Length > 0 ? nameH : 0f) + pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
                       (_beached ? beachedH : 0f) + (showHull ? hullH : 0f) + (showCargo ? cargoH : 0f) + 8f;
@@ -168,7 +168,9 @@ namespace Seaworthy
                 {
                     Ui.Label(new Rect(x + pad, cy, inner, 22f), $"Sail trim  <color={Ui.Muted}>auto</color>", Ui.Text);
                 }
-                GUI.Label(new Rect(x + pad, cy, inner, 22f), $"{TrimInput.Hint} to trim", _right);
+                // The key hint only until you've trimmed once this session; after that the panel stays clean.
+                if (!_trim.HasValue && !_trimmedOnce) GUI.Label(new Rect(x + pad, cy, inner, 22f), $"{TrimInput.Hint} to trim", _right);
+                if (_trim.HasValue) _trimmedOnce = true;
                 cy += 26f;
                 DrawTrimBar(new Rect(x + pad, cy, inner, 14f));
                 cy += trimH - 32f;

@@ -77,7 +77,7 @@ namespace Seaworthy
         {
             ModEnabled = Config.Bind("General", "Enabled", true,
                 "Turn Seaworthy on or off. Off means vanilla sailing. Everyone on a ship should use the same setting.");
-            UiScale = Config.Bind("General", "UI scale", 1f,
+            UiScale = Config.Bind("General", "UI scale", 0.85f,
                 new ConfigDescription("Size of the helm panel.", new AcceptableValueRange<float>(0.5f, 2f)));
 
             const string trim = "Sail Trim";
