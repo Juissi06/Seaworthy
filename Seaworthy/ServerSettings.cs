@@ -10,11 +10,11 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 5;
+        const int Format = 6;
 
         static bool _fromServer, _requested;
-        static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff, _gusts;
-        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus, _gustAngle;
+        static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff, _gusts, _cargo;
+        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus, _gustAngle, _cargoPenalty;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
@@ -28,6 +28,8 @@ namespace Seaworthy
         internal static bool PushOffEnabled => _fromServer ? _pushOff : Plugin.PushOffEnabled.Value;
         internal static bool GustsEnabled => _fromServer ? _gusts : Plugin.GustsEnabled.Value;
         internal static float GustAngle => _fromServer ? _gustAngle : Plugin.GustAngle.Value;
+        internal static bool CargoWeight => _fromServer ? _cargo : Plugin.CargoWeight.Value;
+        internal static float CargoPenalty => _fromServer ? _cargoPenalty : Plugin.CargoPenalty.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -77,6 +79,8 @@ namespace Seaworthy
             pkg.Write(Plugin.PushOffEnabled.Value);
             pkg.Write(Plugin.GustsEnabled.Value);
             pkg.Write(Plugin.GustAngle.Value);
+            pkg.Write(Plugin.CargoWeight.Value);
+            pkg.Write(Plugin.CargoPenalty.Value);
             return pkg;
         }
 
@@ -100,6 +104,8 @@ namespace Seaworthy
             _pushOff = pkg.ReadBool();
             _gusts = pkg.ReadBool();
             _gustAngle = Mathf.Clamp(pkg.ReadSingle(), 0f, 30f);
+            _cargo = pkg.ReadBool();
+            _cargoPenalty = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.6f);
             bool first = !_fromServer;
             _fromServer = true;
             if (first)

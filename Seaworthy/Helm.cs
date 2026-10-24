@@ -18,7 +18,7 @@ namespace Seaworthy
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
         bool _anchored, _beached, _headToWind;
-        float _courseDistance, _courseBearing, _courseSpeed, _hull = 1f;
+        float _courseDistance, _courseBearing, _courseSpeed, _hull = 1f, _cargo;
         // Norse Sense has its own hull readout; don't show it twice.
         // Checked on first use, after every plugin has loaded.
         static bool? _norseSense;
@@ -77,6 +77,7 @@ namespace Seaworthy
 
             var hull = _ship.GetComponent<WearNTear>();
             _hull = hull != null ? hull.GetHealthPercentage() : 1f;
+            _cargo = ServerSettings.CargoWeight ? Cargo.Load(_ship) : 0f;
 
             Vector3 pos = _ship.transform.position;
             Course.CheckArrival(pos);
@@ -115,12 +116,13 @@ namespace Seaworthy
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
             string shipName = ShipNames.Enabled ? ShipNames.Get(_ship) : "";
-            const float nameH = 24f, hullH = 30f;
+            const float nameH = 24f, hullH = 30f, cargoH = 30f;
+            bool showCargo = ServerSettings.CargoWeight && _cargo > 0.01f;
             bool showHull = !NorseSenseHull && _hull < 0.995f;
             const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
             bool course = Course.Active;
             float h = (shipName.Length > 0 ? nameH : 0f) + pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
-                      (_beached ? beachedH : 0f) + (showHull ? hullH : 0f) + 8f;
+                      (_beached ? beachedH : 0f) + (showHull ? hullH : 0f) + (showCargo ? cargoH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
             float y = Plugin.PanelY.Value * (sh - h);
             float inner = w - pad * 2f;
@@ -188,6 +190,17 @@ namespace Seaworthy
                 Color bar = _hull <= 0.25f ? new Color(1f, 0.38f, 0.28f) : _hull <= 0.5f ? new Color(0.94f, 0.69f, 0.29f) : new Color(0.55f, 0.85f, 0.45f);
                 Ui.Bar(new Rect(x + pad + 100f, cy + 9f, inner - 100f, 10f), _hull, bar);
                 cy += hullH;
+            }
+
+            if (showCargo)
+            {
+                Ui.Divider(x + pad, cy, inner);
+                string color = _cargo >= 0.75f ? Ui.Warn : Ui.Muted;
+                int slower = Mathf.RoundToInt(ServerSettings.CargoPenalty * Mathf.Clamp01(_cargo) * 100f);
+                Ui.Label(new Rect(x + pad, cy + 3f, inner, 22f), $"Hold <color={color}><b>{Mathf.Min(_cargo, 9.99f) * 100f:0}%</b></color>", Ui.Text);
+                GUI.Label(new Rect(x + pad, cy + 3f, inner, 22f), slower > 0 ? $"{slower}% slower" : "", _right);
+                Ui.Bar(new Rect(x + pad + 100f, cy + 9f, inner - 190f, 10f), Mathf.Clamp01(_cargo), new Color(0.78f, 0.62f, 0.38f));
+                cy += cargoH;
             }
 
             if (_beached)

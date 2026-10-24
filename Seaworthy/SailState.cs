@@ -196,7 +196,7 @@ namespace Seaworthy
         static bool Prefix(Ship __instance, float sailSize, ref Vector3 __result)
         {
             float? trim = ServerSettings.ManualTrim ? SailState.GetTrim(__instance) : null;
-            float skill = SailingSkill.ForceFactor(__instance);
+            float skill = SailingSkill.ForceFactor(__instance) * Cargo.SpeedFactor(__instance);
             if (!trim.HasValue && skill == 1f) return true; // untouched ship: vanilla
 
             // Same as Ship.GetSailForce, times the trim and skill factors.

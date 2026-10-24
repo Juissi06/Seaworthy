@@ -36,6 +36,7 @@ Rules for every feature:
 10. [x] **Ship lanterns**: warm stern light after dark.
 11. [x] **Ship names**: Left Shift + E at the helm; shown on hover and the helm panel.
 12. [x] **Compatibility**: step aside for other ship-name, map-reveal, skill and anchor mods.
+14. [x] **Cargo weight** (opt-in): a full hold slows the ship; hold load in the helm panel.
 13. [x] **Hull in the helm panel** when damaged (unless Norse Sense shows it).
 
 ## Next
@@ -43,7 +44,7 @@ Rules for every feature:
 - Screenshots and a Nexus page in the house style
 
 ## Later
-- Hull leaks you patch at sea, cargo weight that slows the ship
+- Hull leaks you patch at sea
 - Ship upgrades from biome materials
 
 ## Notes
