@@ -32,6 +32,16 @@ Rules for every feature:
 8. [x] **Gamepad trim**: hold LT and use the stick at the helm.
 7. [x] **Pointing higher**: a skilled helmsman trimming by hand can sail closer to the wind (no-go zone 41° → 34° at skill 100). The helm panel warns "Head to wind" when the sail can't draw.
 
+9. [x] **Course on the map**: a course to a spot gets a temporary pin.
+10. [x] **Ship lanterns**: warm stern light after dark.
+11. [x] **Ship names**: Left Shift + E at the helm; shown on hover and the helm panel.
+12. [x] **Compatibility**: step aside for other ship-name, map-reveal, skill and anchor mods.
+13. [x] **Hull in the helm panel** when damaged (unless Norse Sense shows it).
+
+## Next
+- In-game test pass, then tune: trim speed, bonus, anchor hold, gust size, skill gain rate
+- Screenshots and a Nexus page in the house style
+
 ## Later
 - Hull leaks you patch at sea, cargo weight that slows the ship
 - Ship upgrades from biome materials
