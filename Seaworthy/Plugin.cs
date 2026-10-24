@@ -62,6 +62,9 @@ namespace Seaworthy
         // Server
         internal static ConfigEntry<bool> EnforceOnClients;
 
+        // Compatibility
+        internal static ConfigEntry<bool> AutoCompat;
+
         Harmony _harmony, _skillHarmony;
         GameObject _root;
 
@@ -140,6 +143,10 @@ namespace Seaworthy
                 "Server/host only: players on your server use your sail trim and anchor settings instead of their own, " +
                 "so nobody sails faster with their own config.");
             Config.SettingChanged += (s, e) => ServerSettings.Broadcast(); // server only, see Broadcast
+
+            AutoCompat = Config.Bind("Compatibility", "Auto-adjust for other mods", true,
+                "When another sailing mod already does something (ship names, map reveal at sea, a sailing skill, anchors), " +
+                "turn off Seaworthy's version so they don't fight. Checked once you're in game.");
 
             _root = new GameObject("Seaworthy");
             DontDestroyOnLoad(_root);

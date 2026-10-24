@@ -20,10 +20,10 @@ namespace Seaworthy
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
         internal static float PerfectTrimBonus => _fromServer ? _bonus : Plugin.PerfectTrimBonus.Value;
         internal static float TrimTolerance => _fromServer ? _tolerance : Plugin.TrimTolerance.Value;
-        internal static bool AnchorEnabled => _fromServer ? _anchorEnabled : Plugin.AnchorEnabled.Value;
+        internal static bool AnchorEnabled => (_fromServer ? _anchorEnabled : Plugin.AnchorEnabled.Value) && !Compat.AnchorOff;
         internal static float AnchorHold => _fromServer ? _anchorHold : Plugin.AnchorHold.Value;
-        internal static float LookoutBonus => _fromServer ? _lookout : Plugin.LookoutBonus.Value;
-        internal static bool SkillEnabled => _fromServer ? _skillEnabled : Plugin.SkillEnabled.Value;
+        internal static float LookoutBonus => Compat.LookoutOff ? 0f : _fromServer ? _lookout : Plugin.LookoutBonus.Value;
+        internal static bool SkillEnabled => (_fromServer ? _skillEnabled : Plugin.SkillEnabled.Value) && !Compat.SkillOff;
         internal static float SkillBonus => _fromServer ? _skillBonus : Plugin.SkillBonus.Value;
         internal static bool PushOffEnabled => _fromServer ? _pushOff : Plugin.PushOffEnabled.Value;
         internal static bool GustsEnabled => _fromServer ? _gusts : Plugin.GustsEnabled.Value;

@@ -32,6 +32,8 @@ namespace Seaworthy
             return name.Length > MaxLength ? name.Substring(0, MaxLength) : name;
         }
 
+        internal static bool Enabled => Plugin.ShipNamesEnabled.Value && !Compat.NamesOff;
+
         internal static bool ModifierHeld()
         {
             var key = Plugin.RenameModifier.Value;
@@ -62,7 +64,7 @@ namespace Seaworthy
     {
         static bool Prefix(ShipControlls __instance, bool repeat, ref bool __result)
         {
-            if (repeat || !Plugin.ShipNamesEnabled.Value || !ShipNames.ModifierHeld() || __instance.m_ship == null) return true;
+            if (repeat || !ShipNames.Enabled || !ShipNames.ModifierHeld() || __instance.m_ship == null) return true;
             ShipNames.Rename(__instance.m_ship);
             __result = true;
             return false;
@@ -74,7 +76,7 @@ namespace Seaworthy
     {
         static void Postfix(ShipControlls __instance, ref string __result)
         {
-            if (!Plugin.ShipNamesEnabled.Value || __instance.m_ship == null || string.IsNullOrEmpty(__result)) return;
+            if (!ShipNames.Enabled || __instance.m_ship == null || string.IsNullOrEmpty(__result)) return;
             string name = ShipNames.Get(__instance.m_ship);
             string hint = Localization.instance.Localize(
                 $"[<color=yellow><b>{Plugin.RenameModifier.Value} + $KEY_Use</b></color>] {(name.Length > 0 ? "Rename" : "Name this ship")}");

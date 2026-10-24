@@ -29,6 +29,10 @@ Keys (all changeable)
 - Left Alt + click on the large map: set / clear course
 - Left Shift + E at the helm: name your ship
 
+Works with other mods
+- If you already use a mod that names ships, reveals more map at sea, adds a sailing skill or anchors, Seaworthy turns its own version off (you can turn that off in the config)
+- Tested to load alongside Norse Sense
+
 Requirements:
 -BepInEx
 -Valheim Configuration Manager (optional, but highly recommended for config)

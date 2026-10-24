@@ -28,6 +28,7 @@ namespace Seaworthy
             if (player != null)
             {
                 ServerSettings.RequestIfNeeded();
+                if (!Compat.Checked) Compat.Run("Seaworthy", BepInEx.Logging.Logger.CreateLogSource("Seaworthy"));
                 if (!_namesAdded)
                 {
                     _namesAdded = true;
@@ -106,7 +107,7 @@ namespace Seaworthy
             bool showTrim = ServerSettings.ManualTrim && _ship.IsSailUp();
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
-            string shipName = Plugin.ShipNamesEnabled.Value ? ShipNames.Get(_ship) : "";
+            string shipName = ShipNames.Enabled ? ShipNames.Get(_ship) : "";
             const float nameH = 24f;
             const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
             bool course = Course.Active;
