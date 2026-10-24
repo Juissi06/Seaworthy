@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- The helm panel shows hull health when the ship is damaged (skipped if Norse Sense is installed, which has its own).
 - Compatibility: with another mod that names ships (Shipwright's Touch), reveals the map at sea, adds a sailing skill or anchors (BoatAdditions), Seaworthy turns its own version off so they don't fight. Mods that change the sail force or wind are reported in the log.
 - Ship names: Left Shift + E at the helm to name your ship. Everyone sees it on the helm and at the top of the helm panel.
 - Ship lanterns: after dark, ships glow with a warm lantern at the stern, so you can find yours at night.

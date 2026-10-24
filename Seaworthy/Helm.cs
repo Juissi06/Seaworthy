@@ -18,7 +18,11 @@ namespace Seaworthy
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
         bool _anchored, _beached, _headToWind;
-        float _courseDistance, _courseBearing, _courseSpeed;
+        float _courseDistance, _courseBearing, _courseSpeed, _hull = 1f;
+        // Norse Sense has its own hull readout; don't show it twice.
+        // Checked on first use, after every plugin has loaded.
+        static bool? _norseSense;
+        static bool NorseSenseHull => _norseSense ?? (_norseSense = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("NorseSense")).Value;
         float _pushProgress;
         GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight, _title;
 
@@ -71,6 +75,9 @@ namespace Seaworthy
             float pointing = _trim.HasValue ? SailingSkill.Level01(_ship) : 0f;
             _headToWind = _ship.IsSailUp() && SailForcePatch.WindAngleFactor(windTo, _ship.transform.forward, pointing) < 0.05f;
 
+            var hull = _ship.GetComponent<WearNTear>();
+            _hull = hull != null ? hull.GetHealthPercentage() : 1f;
+
             Vector3 pos = _ship.transform.position;
             Course.CheckArrival(pos);
             if (Course.Active)
@@ -108,11 +115,12 @@ namespace Seaworthy
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
             string shipName = ShipNames.Enabled ? ShipNames.Get(_ship) : "";
-            const float nameH = 24f;
+            const float nameH = 24f, hullH = 30f;
+            bool showHull = !NorseSenseHull && _hull < 0.995f;
             const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
             bool course = Course.Active;
             float h = (shipName.Length > 0 ? nameH : 0f) + pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
-                      (_beached ? beachedH : 0f) + 8f;
+                      (_beached ? beachedH : 0f) + (showHull ? hullH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
             float y = Plugin.PanelY.Value * (sh - h);
             float inner = w - pad * 2f;
@@ -170,6 +178,16 @@ namespace Seaworthy
                 Ui.Label(new Rect(x + pad, cy + 2f, inner, 24f),
                     $"<color={Ui.Warn}>Anchored</color>  <size=12><color={Ui.Muted}>({Plugin.AnchorKey.Value} to raise)</color></size>", Ui.Text);
                 cy += anchorH;
+            }
+
+            if (showHull)
+            {
+                Ui.Divider(x + pad, cy, inner);
+                string color = _hull <= 0.25f ? Ui.Bad : _hull <= 0.5f ? Ui.Warn : Ui.Good;
+                Ui.Label(new Rect(x + pad, cy + 3f, 90f, 22f), $"Hull <color={color}><b>{_hull * 100f:0}%</b></color>", Ui.Text);
+                Color bar = _hull <= 0.25f ? new Color(1f, 0.38f, 0.28f) : _hull <= 0.5f ? new Color(0.94f, 0.69f, 0.29f) : new Color(0.55f, 0.85f, 0.45f);
+                Ui.Bar(new Rect(x + pad + 100f, cy + 9f, inner - 100f, 10f), _hull, bar);
+                cy += hullH;
             }
 
             if (_beached)
