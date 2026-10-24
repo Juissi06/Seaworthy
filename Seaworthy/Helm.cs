@@ -20,7 +20,7 @@ namespace Seaworthy
         bool _anchored, _beached, _headToWind;
         float _courseDistance, _courseBearing, _courseSpeed;
         float _pushProgress;
-        GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight;
+        GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight, _title;
 
         void Update()
         {
@@ -106,15 +106,23 @@ namespace Seaworthy
             bool showTrim = ServerSettings.ManualTrim && _ship.IsSailUp();
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
+            string shipName = Plugin.ShipNamesEnabled.Value ? ShipNames.Get(_ship) : "";
+            const float nameH = 24f;
             const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
             bool course = Course.Active;
-            float h = pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
+            float h = (shipName.Length > 0 ? nameH : 0f) + pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
                       (_beached ? beachedH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
             float y = Plugin.PanelY.Value * (sh - h);
             float inner = w - pad * 2f;
             Ui.Panel(new Rect(x, y, w, h));
             float cy = y + pad - 4f;
+
+            if (shipName.Length > 0)
+            {
+                Ui.Label(new Rect(x + pad, cy - 2f, inner, nameH), shipName, _title);
+                cy += nameH;
+            }
 
             DrawCompass(new Rect(x + pad, cy, inner, compassH));
             cy += compassH + 6f;
@@ -183,6 +191,7 @@ namespace Seaworthy
             _big = new GUIStyle(Ui.Text) { fontSize = 20 };
             _textCenter = new GUIStyle(Ui.Text) { alignment = TextAnchor.MiddleCenter };
             _textRight = new GUIStyle(Ui.Text) { alignment = TextAnchor.MiddleRight };
+            _title = new GUIStyle(Ui.Title) { fontSize = 18, alignment = TextAnchor.MiddleCenter };
         }
 
         // A strip of the horizon centred on the heading: ticks every 15°, compass points, and where the wind comes from.

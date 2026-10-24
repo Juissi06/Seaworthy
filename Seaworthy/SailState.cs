@@ -41,6 +41,7 @@ namespace Seaworthy
             });
             SailingSkill.Register(ship, nview);
             PushOff.Register(nview, ship);
+            ShipNames.Register(nview);
         }
 
         // ---------- Trim ----------

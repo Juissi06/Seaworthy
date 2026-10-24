@@ -33,6 +33,8 @@ namespace Seaworthy
         internal static ConfigEntry<SpeedUnit> SpeedUnits;
         internal static ConfigEntry<bool> ShowTips;
         internal static ConfigEntry<bool> ShipLanterns;
+        internal static ConfigEntry<bool> ShipNamesEnabled;
+        internal static ConfigEntry<KeyCode> RenameModifier;
 
         // Anchor
         internal static ConfigEntry<bool> AnchorEnabled;
@@ -95,6 +97,10 @@ namespace Seaworthy
             SpeedUnits = Config.Bind(panel, "Speed unit", SpeedUnit.Knots, "Unit for the ship's speed.");
             ShipLanterns = Config.Bind("General", "Ship lanterns", true,
                 "After dark, ships carry a warm lantern glow at the stern. Visual only, on your screen.");
+            ShipNamesEnabled = Config.Bind("General", "Ship names", true,
+                "Name your ships: hold the rename modifier and press Use at the helm. Everyone sees the name.");
+            RenameModifier = Config.Bind("General", "Rename modifier", KeyCode.LeftShift,
+                "Hold this and press Use at a helm to name the ship.");
             ShowTips = Config.Bind(panel, "Show tips", true, "The first time you take a helm each session, list Seaworthy's controls.");
 
             const string anchor = "Anchor";
