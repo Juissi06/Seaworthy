@@ -61,7 +61,7 @@ namespace Seaworthy
         internal static float OptimalTrim(Ship ship)
         {
             Transform t = ship.transform;
-            Vector3 wind = Vector3.Cross(Vector3.Cross(EnvMan.instance.GetWindDir(), t.up), t.up);
+            Vector3 wind = Vector3.Cross(Vector3.Cross(Wind.Direction, t.up), t.up); // with gusts: only manual trim uses this
             float blend = 0.5f + Vector3.Dot(t.forward, wind) * 0.5f;
             Vector3 mast = -Vector3.Lerp(wind, Vector3.Normalize(wind - t.forward), blend);
             if (mast.sqrMagnitude < 1e-4f) return 0f;
@@ -183,15 +183,23 @@ namespace Seaworthy
             if (!trim.HasValue && skill == 1f) return true; // untouched ship: vanilla
 
             // Same as Ship.GetSailForce, times the trim and skill factors.
-            Vector3 windDir = EnvMan.instance.GetWindDir();
-            float intensity = Mathf.Lerp(0.25f, 1f, EnvMan.instance.GetWindIntensity());
+            // A sail you trim yourself feels the gusts; one on auto gets vanilla's steady wind.
+            Vector3 windDir = trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir();
+            float intensity = Mathf.Lerp(0.25f, 1f, EnvMan.instance.GetWindIntensity()) * (trim.HasValue ? Wind.GustStrength : 1f);
             float trimFactor = trim.HasValue ? SailState.ForceFactor(trim.Value, SailState.OptimalTrim(__instance)) : 1f;
-            float factor = __instance.GetWindAngleFactor() * intensity * trimFactor * skill;
+            float factor = WindAngleFactor(windDir, __instance.transform.forward) * intensity * trimFactor * skill;
             Vector3 target = Vector3.Normalize(windDir + __instance.transform.forward) * (factor * __instance.m_sailForceFactor * sailSize);
             ref Vector3 force = ref SailForce(__instance);
             force = Vector3.SmoothDamp(force, target, ref WindChangeVelocity(__instance), 1f, 99f);
             __result = force;
             return false;
+        }
+
+        // Ship.GetWindAngleFactor for a given wind: best across the wind, 70% straight downwind, none into it.
+        static float WindAngleFactor(Vector3 windDir, Vector3 forward)
+        {
+            float d = Vector3.Dot(windDir, -forward);
+            return Mathf.Lerp(0.7f, 1f, 1f - Mathf.Abs(d)) * (1f - Utils.LerpStep(0.75f, 0.8f, d));
         }
     }
 

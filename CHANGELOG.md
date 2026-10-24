@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Gusts: the wind wanders a few degrees and surges, more in storms, so a sail you trim yourself needs attention on long voyages. Ships on auto trim sail like vanilla. Everyone sees the same gusts.
 - Push off: at the helm of a beached ship, hold B to shove it towards the deepest water nearby. The helm panel tells you when you're beached.
 - Sailing skill: a new skill in your skills list. It levels while you steer under sail (rowing counts half) and adds up to 20% sail force and rowing speed at level 100. Works for whoever is steering, even when another player runs the ship.
 - Lookout: while aboard, the map reveals a larger area around you. Bigger ships see further (longship twice the normal radius by default).

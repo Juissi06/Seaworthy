@@ -10,11 +10,11 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 4;
+        const int Format = 5;
 
         static bool _fromServer, _requested;
-        static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff;
-        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus;
+        static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff, _gusts;
+        static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus, _gustAngle;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
         internal static float TrimSpeed => _fromServer ? _trimSpeed : Plugin.TrimSpeed.Value;
@@ -26,6 +26,8 @@ namespace Seaworthy
         internal static bool SkillEnabled => _fromServer ? _skillEnabled : Plugin.SkillEnabled.Value;
         internal static float SkillBonus => _fromServer ? _skillBonus : Plugin.SkillBonus.Value;
         internal static bool PushOffEnabled => _fromServer ? _pushOff : Plugin.PushOffEnabled.Value;
+        internal static bool GustsEnabled => _fromServer ? _gusts : Plugin.GustsEnabled.Value;
+        internal static float GustAngle => _fromServer ? _gustAngle : Plugin.GustAngle.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -73,6 +75,8 @@ namespace Seaworthy
             pkg.Write(Plugin.SkillEnabled.Value);
             pkg.Write(Plugin.SkillBonus.Value);
             pkg.Write(Plugin.PushOffEnabled.Value);
+            pkg.Write(Plugin.GustsEnabled.Value);
+            pkg.Write(Plugin.GustAngle.Value);
             return pkg;
         }
 
@@ -94,6 +98,8 @@ namespace Seaworthy
             _skillEnabled = pkg.ReadBool();
             _skillBonus = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.5f);
             _pushOff = pkg.ReadBool();
+            _gusts = pkg.ReadBool();
+            _gustAngle = Mathf.Clamp(pkg.ReadSingle(), 0f, 30f);
             bool first = !_fromServer;
             _fromServer = true;
             if (first)

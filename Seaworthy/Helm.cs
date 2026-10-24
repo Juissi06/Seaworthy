@@ -61,7 +61,8 @@ namespace Seaworthy
 
             _speed = Mathf.Abs(_ship.GetSpeed());
             _heading = Compass(_ship.transform.forward);
-            _windFrom = Compass(-EnvMan.instance.GetWindDir()); // GetWindDir is where the wind blows to
+            // GetWindDir is where the wind blows to. Gusts only matter (and only show) when you trim yourself.
+            _windFrom = Compass(-(_trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir()));
             _wind = EnvMan.instance.GetWindIntensity();
         }
 

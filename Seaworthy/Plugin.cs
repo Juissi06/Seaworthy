@@ -40,6 +40,10 @@ namespace Seaworthy
         internal static ConfigEntry<bool> PushOffEnabled;
         internal static ConfigEntry<KeyboardShortcut> PushOffKey;
 
+        // Wind
+        internal static ConfigEntry<bool> GustsEnabled;
+        internal static ConfigEntry<float> GustAngle;
+
         // Lookout
         internal static ConfigEntry<float> LookoutBonus;
 
@@ -94,6 +98,12 @@ namespace Seaworthy
                 "At the helm of a beached ship, hold the push-off key to shove it back towards deeper water.");
             PushOffKey = Config.Bind("Push Off", "Push-off key", new KeyboardShortcut(KeyCode.B),
                 "Hold at the helm of a beached ship to push off.");
+
+            GustsEnabled = Config.Bind("Wind", "Gusts", true,
+                "The wind wanders and surges, more in storms, so a sail you trim yourself needs attention. Ships on auto trim aren't affected.");
+            GustAngle = Config.Bind("Wind", "Gust angle", 12f,
+                new ConfigDescription("How far gusts turn the wind, in degrees, in a storm. Calm air turns about a third of this.",
+                    new AcceptableValueRange<float>(0f, 30f)));
 
             LookoutBonus = Config.Bind("Lookout", "Map reveal bonus at sea", 1f,
                 new ConfigDescription("While aboard, the map reveals this much more around you, scaled by ship size: " +
