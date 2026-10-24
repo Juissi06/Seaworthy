@@ -40,6 +40,7 @@ namespace Seaworthy
                 if (nview.IsOwner()) nview.GetZDO().Set(AnchorKey, down);
             });
             SailingSkill.Register(ship, nview);
+            PushOff.Register(nview, ship);
         }
 
         // ---------- Trim ----------

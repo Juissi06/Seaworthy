@@ -17,7 +17,8 @@ namespace Seaworthy
         Ship _ship;
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
-        bool _anchored;
+        bool _anchored, _beached;
+        float _pushProgress;
         GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight;
 
         void Update()
@@ -55,6 +56,9 @@ namespace Seaworthy
             _optimal = SailState.OptimalTrim(_ship);
             _efficiency = _trim.HasValue ? SailState.ForceFactor(_trim.Value, _optimal) : 1f;
 
+            _beached = PushOff.IsBeached(_ship, out Vector3 towardsDeep);
+            _pushProgress = PushOff.Update(_ship, _beached, towardsDeep);
+
             _speed = Mathf.Abs(_ship.GetSpeed());
             _heading = Compass(_ship.transform.forward);
             _windFrom = Compass(-EnvMan.instance.GetWindDir()); // GetWindDir is where the wind blows to
@@ -73,8 +77,9 @@ namespace Seaworthy
             bool showTrim = ServerSettings.ManualTrim && _ship.IsSailUp();
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
-            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f;
-            float h = pad + compassH + 6f + statsH + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) + 8f;
+            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f;
+            float h = pad + compassH + 6f + statsH + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
+                      (_beached ? beachedH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
             float y = Plugin.PanelY.Value * (sh - h);
             float inner = w - pad * 2f;
@@ -112,6 +117,15 @@ namespace Seaworthy
                 Ui.Divider(x + pad, cy, inner);
                 Ui.Label(new Rect(x + pad, cy + 2f, inner, 24f),
                     $"<color={Ui.Warn}>Anchored</color>  <size=12><color={Ui.Muted}>({Plugin.AnchorKey.Value} to raise)</color></size>", Ui.Text);
+                cy += anchorH;
+            }
+
+            if (_beached)
+            {
+                Ui.Divider(x + pad, cy, inner);
+                Ui.Label(new Rect(x + pad, cy + 2f, inner, 22f),
+                    $"<color={Ui.Warn}>Beached</color>  <size=12><color={Ui.Muted}>hold {Plugin.PushOffKey.Value} to push off</color></size>", Ui.Text);
+                if (_pushProgress > 0f) Ui.Bar(new Rect(x + pad, cy + 25f, inner, 6f), _pushProgress, Ui.GoldColor);
             }
 
             GUI.matrix = oldMatrix;

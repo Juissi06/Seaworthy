@@ -10,10 +10,10 @@ namespace Seaworthy
     {
         const string GetRpc = "Seaworthy_GetSettings";
         const string SendRpc = "Seaworthy_Settings";
-        const int Format = 3;
+        const int Format = 4;
 
         static bool _fromServer, _requested;
-        static bool _manualTrim, _anchorEnabled, _skillEnabled;
+        static bool _manualTrim, _anchorEnabled, _skillEnabled, _pushOff;
         static float _trimSpeed, _bonus, _tolerance, _anchorHold, _lookout, _skillBonus;
 
         internal static bool ManualTrim => _fromServer ? _manualTrim : Plugin.ManualTrim.Value;
@@ -25,6 +25,7 @@ namespace Seaworthy
         internal static float LookoutBonus => _fromServer ? _lookout : Plugin.LookoutBonus.Value;
         internal static bool SkillEnabled => _fromServer ? _skillEnabled : Plugin.SkillEnabled.Value;
         internal static float SkillBonus => _fromServer ? _skillBonus : Plugin.SkillBonus.Value;
+        internal static bool PushOffEnabled => _fromServer ? _pushOff : Plugin.PushOffEnabled.Value;
         internal static bool FromServer => _fromServer;
 
         // New session: ZRoutedRpc is recreated with each ZNet.
@@ -71,6 +72,7 @@ namespace Seaworthy
             pkg.Write(Plugin.LookoutBonus.Value);
             pkg.Write(Plugin.SkillEnabled.Value);
             pkg.Write(Plugin.SkillBonus.Value);
+            pkg.Write(Plugin.PushOffEnabled.Value);
             return pkg;
         }
 
@@ -91,6 +93,7 @@ namespace Seaworthy
             _lookout = Mathf.Clamp(pkg.ReadSingle(), 0f, 3f);
             _skillEnabled = pkg.ReadBool();
             _skillBonus = Mathf.Clamp(pkg.ReadSingle(), 0f, 0.5f);
+            _pushOff = pkg.ReadBool();
             bool first = !_fromServer;
             _fromServer = true;
             if (first)

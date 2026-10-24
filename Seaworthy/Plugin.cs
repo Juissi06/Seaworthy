@@ -36,6 +36,10 @@ namespace Seaworthy
         internal static ConfigEntry<KeyboardShortcut> AnchorKey;
         internal static ConfigEntry<float> AnchorHold;
 
+        // Push off
+        internal static ConfigEntry<bool> PushOffEnabled;
+        internal static ConfigEntry<KeyboardShortcut> PushOffKey;
+
         // Lookout
         internal static ConfigEntry<float> LookoutBonus;
 
@@ -85,6 +89,11 @@ namespace Seaworthy
             AnchorHold = Config.Bind(anchor, "Holding strength", 0.6f,
                 new ConfigDescription("How quickly a dropped anchor stops the ship. Higher stops it faster.",
                     new AcceptableValueRange<float>(0.1f, 3f)));
+
+            PushOffEnabled = Config.Bind("Push Off", "Enabled", true,
+                "At the helm of a beached ship, hold the push-off key to shove it back towards deeper water.");
+            PushOffKey = Config.Bind("Push Off", "Push-off key", new KeyboardShortcut(KeyCode.B),
+                "Hold at the helm of a beached ship to push off.");
 
             LookoutBonus = Config.Bind("Lookout", "Map reveal bonus at sea", 1f,
                 new ConfigDescription("While aboard, the map reveals this much more around you, scaled by ship size: " +
