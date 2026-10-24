@@ -18,6 +18,7 @@ namespace Seaworthy
         float _optimal, _efficiency, _speed, _heading, _windFrom, _wind;
         float? _trim;
         bool _anchored, _beached;
+        float _courseDistance, _courseBearing, _courseSpeed;
         float _pushProgress;
         GUIStyle _right, _point, _tiny, _big, _textCenter, _textRight;
 
@@ -64,6 +65,18 @@ namespace Seaworthy
             // GetWindDir is where the wind blows to. Gusts only matter (and only show) when you trim yourself.
             _windFrom = Compass(-(_trim.HasValue ? Wind.Direction : EnvMan.instance.GetWindDir()));
             _wind = EnvMan.instance.GetWindIntensity();
+
+            Vector3 pos = _ship.transform.position;
+            Course.CheckArrival(pos);
+            if (Course.Active)
+            {
+                _courseDistance = Utils.DistanceXZ(pos, Course.Target);
+                _courseBearing = Course.Bearing(pos);
+                Vector3 toTarget = Course.Target - pos;
+                toTarget.y = 0f;
+                // Speed made good towards the target, for the ETA.
+                _courseSpeed = Vector3.Dot(SailState.Body(_ship)?.linearVelocity ?? Vector3.zero, toTarget.normalized);
+            }
         }
 
         // 0 = north (+z), clockwise.
@@ -78,8 +91,9 @@ namespace Seaworthy
             bool showTrim = ServerSettings.ManualTrim && _ship.IsSailUp();
             Matrix4x4 oldMatrix = Ui.BeginScaled(out float sw, out float sh);
 
-            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f;
-            float h = pad + compassH + 6f + statsH + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
+            const float w = 440f, pad = 14f, compassH = 30f, statsH = 30f, trimH = 52f, anchorH = 26f, beachedH = 34f, courseH = 26f;
+            bool course = Course.Active;
+            float h = pad + compassH + 6f + statsH + (course ? courseH : 0f) + (showTrim ? trimH : 0f) + (_anchored ? anchorH : 0f) +
                       (_beached ? beachedH : 0f) + 8f;
             float x = (sw - w) * 0.5f;
             float y = Plugin.PanelY.Value * (sh - h);
@@ -92,6 +106,19 @@ namespace Seaworthy
 
             DrawStats(new Rect(x + pad, cy, inner, statsH));
             cy += statsH;
+
+            if (course)
+            {
+                Ui.Divider(x + pad, cy, inner);
+                float turn = Mathf.DeltaAngle(_heading, _courseBearing);
+                string steer = Mathf.Abs(turn) < 5f ? $"<color={Ui.Good}>on course</color>"
+                    : turn > 0f ? $"steer <b>{turn:0}°</b> right" : $"steer <b>{-turn:0}°</b> left";
+                Ui.Label(new Rect(x + pad, cy + 2f, inner, 22f),
+                    $"<color={Ui.Gold}>{Course.Name}</color>  {Course.FormatDistance(_courseDistance)}  <color={Ui.Muted}>|</color>  {steer}",
+                    Ui.Text);
+                GUI.Label(new Rect(x + pad, cy + 2f, inner, 22f), $"ETA {Course.FormatEta(_courseDistance, _courseSpeed)}", _right);
+                cy += courseH;
+            }
 
             if (showTrim)
             {
@@ -175,6 +202,18 @@ namespace Seaworthy
                     GUI.color = new Color(1f, 1f, 1f, 0.35f * fade);
                     GUI.DrawTexture(new Rect(px - 0.5f, r.y + 10f, 1f, r.height - 20f), Texture2D.whiteTexture);
                 }
+            }
+
+            // Course: an outlined gold square at the target's bearing, pinned to the edge when out of view.
+            if (Course.Active && repaint)
+            {
+                float cxp = Mathf.Clamp(Pos(_courseBearing), r.x + 6f, r.xMax - 6f);
+                float cyp = r.y + r.height * 0.5f;
+                GUI.color = new Color(0f, 0f, 0f, 0.7f);
+                GUI.DrawTexture(new Rect(cxp - 6f, cyp - 6f, 12f, 12f), Texture2D.whiteTexture);
+                GUI.color = Ui.GoldColor;
+                GUI.DrawTexture(new Rect(cxp - 4.5f, cyp - 4.5f, 9f, 9f), Texture2D.whiteTexture);
+                GUI.color = old;
             }
 
             // Wind: a blue marker where it comes from, pinned to the edge with a hint when it's behind you.

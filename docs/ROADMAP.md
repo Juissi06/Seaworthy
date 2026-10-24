@@ -27,7 +27,7 @@ Rules for every feature:
 3. [x] **Sailing skill**: a real skill in the skills list. Levels with distance sailed; raises sail force and rowing speed a little (default +20% at 100).
 4. [x] **Push off**: at the helm of a beached ship, hold a key to shove it back into deeper water.
 5. [x] **Gusts and storm winds**: the wind wanders and surges, more in storms, shifting the best trim angle. Only affects a sail you trim yourself.
-6. [ ] **Course to a pin**: pick a map pin, the helm panel shows bearing, distance and ETA.
+6. [x] **Course to a pin**: Left Alt + click a pin or spot on the large map; the helm panel shows it on the compass with distance, which way to steer and an ETA.
 
 ## Later
 - Tacking: a well trimmed sail can point a little higher into the wind than vanilla

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Course: Left Alt + click a pin (or any spot) on the large map to set a course. The helm panel marks it on the compass and shows the distance, which way to steer and an ETA. You get a message when you arrive.
 - Gusts: the wind wanders a few degrees and surges, more in storms, so a sail you trim yourself needs attention on long voyages. Ships on auto trim sail like vanilla. Everyone sees the same gusts.
 - Push off: at the helm of a beached ship, hold B to shove it towards the deepest water nearby. The helm panel tells you when you're beached.
 - Sailing skill: a new skill in your skills list. It levels while you steer under sail (rowing counts half) and adds up to 20% sail force and rowing speed at level 100. Works for whoever is steering, even when another player runs the ship.

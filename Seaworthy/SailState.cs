@@ -146,7 +146,7 @@ namespace Seaworthy
             }
 
             var modifier = Plugin.TrimModifier.Value;
-            if (modifier == KeyCode.None || !Input.GetKey(modifier)) return;
+            if (modifier == KeyCode.None || !BepInEx.UnityInput.Current.GetKey(modifier)) return;
 
             // First touch starts from where the game had the sail, so taking over never jolts it.
             if (!SailState.LocalManual)

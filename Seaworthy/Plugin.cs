@@ -40,6 +40,9 @@ namespace Seaworthy
         internal static ConfigEntry<bool> PushOffEnabled;
         internal static ConfigEntry<KeyboardShortcut> PushOffKey;
 
+        // Course
+        internal static ConfigEntry<KeyCode> CourseModifier;
+
         // Wind
         internal static ConfigEntry<bool> GustsEnabled;
         internal static ConfigEntry<float> GustAngle;
@@ -98,6 +101,9 @@ namespace Seaworthy
                 "At the helm of a beached ship, hold the push-off key to shove it back towards deeper water.");
             PushOffKey = Config.Bind("Push Off", "Push-off key", new KeyboardShortcut(KeyCode.B),
                 "Hold at the helm of a beached ship to push off.");
+
+            CourseModifier = Config.Bind(panel, "Course modifier", KeyCode.LeftAlt,
+                "Hold this and click a pin (or any spot) on the large map to set a course; click it again to clear it. None = off.");
 
             GustsEnabled = Config.Bind("Wind", "Gusts", true,
                 "The wind wanders and surges, more in storms, so a sail you trim yourself needs attention. Ships on auto trim aren't affected.");
