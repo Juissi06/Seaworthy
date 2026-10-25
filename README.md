@@ -9,7 +9,7 @@ Installation:
 - Multiplayer: everyone on the ship should have it, and install it on the server too so the server's settings apply to everyone
 
 Main features
-- Helm panel: compass with your heading, the wind and your course, plus speed, sail mode, wind strength, sail trim and anchor. Built with Valheim's own UI style
+- Helm panel: compass with your heading, the wind and your course, plus speed, sail mode, wind strength, sail trim and anchor. Sits in the bottom right corner so it doesn't block your view (movable), built with Valheim's own UI style
 - Sail trim: hold Left Shift and use A/D at the helm to turn the sail. Find the green zone and you sail up to 15% faster than vanilla, miss it and you're slower
 - Gusts: the wind wanders and surges, more in storms, so trimming keeps you busy on long trips (only when you trim yourself)
 - Sailing skill: a new skill that levels while you steer, up to 20% faster sailing and rowing at level 100, and skilled sailors trimming by hand can sail closer to the wind
@@ -20,6 +20,7 @@ Main features
 - Ship lanterns: a warm glow at the stern after dark
 - Ship names: name your ship, everyone sees it
 - Course: Left Alt + click a pin on the map and the helm panel shows the way, the distance and when you'll get there
+- Hull health: small readout while you're aboard, a warning when the ship takes damage and a loud one at 50% and 25%
 - Wave damage setting: 1 = vanilla, lower it if the waves annoy you
 - Cargo weight (optional): turn it on and a full hold slows the ship down
 - The server decides the rules, so nobody sails faster with their own config
@@ -34,7 +35,7 @@ Keys (all changeable)
 
 Works with other mods
 - If you already use a mod that names ships, reveals more map at sea, adds a sailing skill or anchors, Seaworthy turns its own version off (you can turn that off in the config)
-- Made to run alongside Norse Sense (same look, no overlapping features)
+- Made to run alongside Norse Sense (same look, no overlapping features, the hull readout moved here from Norse Sense)
 
 Requirements:
 -BepInEx

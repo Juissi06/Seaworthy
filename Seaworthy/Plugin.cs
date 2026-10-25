@@ -29,7 +29,14 @@ namespace Seaworthy
 
         // Helm panel
         internal static ConfigEntry<bool> ShowHelmPanel;
+        internal static ConfigEntry<float> PanelX;
         internal static ConfigEntry<float> PanelY;
+
+        // Hull
+        internal static ConfigEntry<bool> ShowHullReadout;
+        internal static ConfigEntry<bool> HullWarnings;
+        internal static ConfigEntry<float> HullWarnLevel;
+        internal static ConfigEntry<float> HullCriticalLevel;
         internal static ConfigEntry<SpeedUnit> SpeedUnits;
         internal static ConfigEntry<bool> ShowTips;
         internal static ConfigEntry<bool> ShipLanterns;
@@ -101,8 +108,12 @@ namespace Seaworthy
             const string panel = "Helm Panel";
             ShowHelmPanel = Config.Bind(panel, "Show helm panel", true,
                 "At the helm, show a panel with a compass, speed, wind, sail trim and anchor.");
-            PanelY = Config.Bind(panel, "Position Y", 0.80f,
-                new ConfigDescription("Vertical position of the helm panel. 0 = top edge, 1 = bottom edge.",
+            // New keys (the old "Position Y" put the panel in the middle of the view).
+            PanelX = Config.Bind(panel, "Panel X", 1f,
+                new ConfigDescription("Horizontal position of the helm panel and hull readout. 0 = left edge, 0.5 = centre, 1 = right edge.",
+                    new AcceptableValueRange<float>(0f, 1f)));
+            PanelY = Config.Bind(panel, "Panel Y", 1f,
+                new ConfigDescription("Vertical position of the helm panel and hull readout. 0 = top edge, 1 = bottom edge.",
                     new AcceptableValueRange<float>(0f, 1f)));
             SpeedUnits = Config.Bind(panel, "Speed unit", SpeedUnit.Knots, "Unit for the ship's speed.");
             ShipLanterns = Config.Bind("General", "Ship lanterns", true,
@@ -112,6 +123,16 @@ namespace Seaworthy
             RenameModifier = Config.Bind("General", "Rename modifier", KeyCode.LeftShift,
                 "Hold this and press Use at a helm to name the ship.");
             ShowTips = Config.Bind(panel, "Show tips", true, "The first time you take a helm each session, list Seaworthy's controls.");
+
+            const string hull = "Hull";
+            ShowHullReadout = Config.Bind(hull, "Show hull readout", true,
+                "While aboard a ship, show its hull health (in the helm panel when you're steering).");
+            HullWarnings = Config.Bind(hull, "Hull warnings", true,
+                "Warn when the ship you're on takes damage, and loudly when it drops below the warning and critical levels.");
+            HullWarnLevel = Config.Bind(hull, "Warning level", 0.5f,
+                new ConfigDescription("Hull health (0-1) for the 'hull damaged' warning.", new AcceptableValueRange<float>(0.1f, 0.95f)));
+            HullCriticalLevel = Config.Bind(hull, "Critical level", 0.25f,
+                new ConfigDescription("Hull health (0-1) for the 'hull critical' warning.", new AcceptableValueRange<float>(0.05f, 0.9f)));
 
             const string anchor = "Anchor";
             AnchorEnabled = Config.Bind(anchor, "Enabled", true, "Let the helmsman drop an anchor that stops the ship and holds it in place.");
@@ -172,6 +193,7 @@ namespace Seaworthy
             _root = new GameObject("Seaworthy");
             DontDestroyOnLoad(_root);
             _root.AddComponent<Helm>();
+            _root.AddComponent<Hull>();
 
             _skillHarmony = new Harmony(Guid + ".skill");
             SkillPatches.Apply(_skillHarmony);

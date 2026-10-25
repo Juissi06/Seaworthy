@@ -1,11 +1,13 @@
 # Changelog
 
 ## Unreleased
+- Helm panel moved to the bottom right corner so it doesn't block the view ahead. New Panel X / Panel Y settings move it anywhere.
+- Hull readout and hull warnings moved here from Norse Sense: a small hull bar while you're aboard (in the helm panel when steering), a warning when the ship is hit and loud ones at 50% and 25%.
+- Sailing skill levels a bit slower (one raise per 15 m).
 - Wave damage setting: scale the hull damage from slamming into waves (1 = vanilla).
 - Helm panel is smaller by default (UI scale 0.85) and the trim key hint disappears once you've trimmed.
 - Crew rowing: each extra player aboard makes rowing 10% faster (up to 3 extra).
 - Cargo weight (optional, off by default): a heavily loaded hold makes the ship slower; the helm panel shows how full the hold is.
-- The helm panel shows hull health when the ship is damaged (skipped if Norse Sense is installed, which has its own).
 - Compatibility: with another mod that names ships (Shipwright's Touch), reveals the map at sea, adds a sailing skill or anchors (BoatAdditions), Seaworthy turns its own version off so they don't fight. Mods that change the sail force or wind are reported in the log.
 - Ship names: Left Shift + E at the helm to name your ship. Everyone sees it on the helm and at the top of the helm panel.
 - Ship lanterns: after dark, ships glow with a warm lantern at the stern, so you can find yours at night.
