@@ -11,7 +11,7 @@ namespace Seaworthy
     {
         // A fixed id outside the game's own skill numbers. Saved in the character file, so it must never change.
         internal static readonly Skills.SkillType Type = (Skills.SkillType)(Mathf.Abs("Seaworthy.Sailing".GetStableHashCode()) % 100000 + 1000);
-        const float MetresPerRaise = 10f;
+        const float MetresPerRaise = 15f;
         const string SkillRpc = "Seaworthy_Skill";
         static readonly int SkillKey = "seaworthy_skill".GetStableHashCode();
 

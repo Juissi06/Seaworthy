@@ -46,7 +46,7 @@ Under the hood
 - [x] Whole mod can be switched off in game; the Sailing skill is kept in saves either way
 
 ## Next
-- In-game test pass, then tune: trim speed, bonus, anchor hold, gust size, skill gain rate, push-off strength
+- Tune from play: trim speed, bonus, anchor hold, gust size, push-off strength (skill gain slowed to 1 raise per 15 m after the first test)
 - Screenshots and the Nexus page
 
 ## Later
